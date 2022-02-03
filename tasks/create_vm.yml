@@ -1,0 +1,46 @@
+---
+
+- name: Create public IP address
+  azure_rm_publicipaddress:
+    resource_group: "{{ site_resource_group }}"
+    allocation_method: Static
+    name: "{{ public_ip }}"
+  register: output_ip_address
+
+- name: Public IP of VM
+  debug:
+    msg: "The public IP is {{ output_ip_address.state.ip_address }}."
+
+- name: Create Network Security Group that allows SSH
+  azure_rm_securitygroup:
+    resource_group: "{{ site_resource_group }}"
+    name: "{{ security_group }}"
+    rules: "{{ security_group_rules }}"
+
+- name: Create virtual network interface
+  azure_rm_networkinterface:
+    resource_group: "{{ site_resource_group }}"
+    name: "{{ nic }}"
+    virtual_network: "{{ virtual_network }}"
+    subnet: "{{ virtual_subnet }}"
+    security_group: "{{ security_group }}"
+    ip_configurations:
+      - name: ipconfig1
+        public_ip_address_name: "{{ public_ip }}"
+        primary: True
+
+# TODO: Add SSH key
+- name: Create VM
+  azure_rm_virtualmachine:
+    resource_group: "{{ site_resource_group }}"
+    name: "{{ inventory_hostname }}"
+    vm_size: "{{ flavor }}"
+    admin_username: "{{ admin_user }}"
+    ssh_password_enabled: false
+    ssh_public_keys:
+      - path: "/home/{{ admin_username }}/.ssh/authorized_keys"
+        key_data: "{{ ssh_key_data }}"
+    network_interfaces: "{{ nic }}"
+    image: "{{ azure_image }}"
+
+...

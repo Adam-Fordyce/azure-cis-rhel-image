@@ -1,0 +1,14 @@
+---
+all:
+  children:
+    controller:
+      hosts:
+        localhost:
+    cloud:
+      hosts:
+        provisioner:
+    cis:
+      hosts:
+        cisrhel01:
+        cisrhel02:
+...

@@ -1,0 +1,52 @@
+---
+# Playbook to create CIS hardened RHEL image on Azure
+- name: Create Azure Environment
+  hosts: localhost
+  connection: local
+  tasks:
+
+    - name: "Setup Azure Tasks"
+      include_tasks: "{{ item }}"
+      loop:
+        - ../tasks/create_resource_group.yml
+        - ../tasks/create_virtual_network.yml
+        - ../tasks/create_subnet.yml
+
+    - name: "Exit Early"
+      fail:
+        msg: "Exit early"
+# TODO: Possibly loop over hostvars['provisioners']
+    - name: "Create Provisioner VM"
+      include_tasks: tasks/create_vm.yml
+      register: vm_output
+
+    - debug:
+        var: vm_output
+
+# TODO: Get provisioner IP address
+# TODO: Update Ansible variable to use public IP
+# TODO: Update Ansible to use correct SSH key
+
+- name: Create Custom Image
+  hosts: provisioner
+  become: yes
+  tasks:
+
+    - name: "Create Image"
+      include_tasks: "{{ item }}"
+      loop:
+        - tasks/create_storage_container.yml
+        - tasks/create_storage_blob.yml
+        - tasks/create_image_from_vhd.yml
+
+- name: Start VM instances using Custom Image
+  hosts: provisioner
+  become: yes
+  tasks:
+
+    - name: "Create Image"
+      include_tasks: "{{ item }}"
+      loop:
+        - tasks/create_storage_container.yml
+        - tasks/create_storage_blob.yml
+...
