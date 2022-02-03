@@ -12,16 +12,27 @@
         - ../tasks/create_virtual_network.yml
         - ../tasks/create_subnet.yml
 
-    - name: "Exit Early"
-      fail:
-        msg: "Exit early"
 # TODO: Possibly loop over hostvars['provisioners']
     - name: "Create Provisioner VM"
-      include_tasks: tasks/create_vm.yml
+      include_tasks: ../tasks/create_vm.yml
+      vars:
+        public_ip: "{{ hostvars[vm].public_ip }}"
+        security_group: "{{ hostvars[vm].security_group }}"
+        nic: "{{ hostvars[vm].nic }}"
+        flavor: "{{ hostvars[vm].flavor }}"
+        vmname: "{{ hostvars[vm].inventory_hostname }}"
+        azure_image: "{{ hostvars[vm].azure_image }}"
+      loop: "{{ groups['cloud'] }}"
+      loop_control:
+        loop_var: vm
+        label: "Creating cloud VM {{ hostvars[vm].inventory_hostname }}"
       register: vm_output
 
     - debug:
         var: vm_output
+
+    - fail:
+        msg: £xit
 
 # TODO: Get provisioner IP address
 # TODO: Update Ansible variable to use public IP

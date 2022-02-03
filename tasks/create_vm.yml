@@ -29,18 +29,27 @@
         public_ip_address_name: "{{ public_ip }}"
         primary: True
 
-# TODO: Add SSH key
+- name: Create an availability set for managed disk vm
+  azure_rm_availabilityset:
+    name: "{{ vmname }}-avs-managed-disk"
+    resource_group: "{{ site_resource_group }}"
+    platform_update_domain_count: 5
+    platform_fault_domain_count: 2
+    sku: Aligned
+
 - name: Create VM
   azure_rm_virtualmachine:
     resource_group: "{{ site_resource_group }}"
-    name: "{{ inventory_hostname }}"
+    name: "{{ vmname }}"
     vm_size: "{{ flavor }}"
-    admin_username: "{{ admin_user }}"
+    admin_username: "{{ site_admin_user }}"
     ssh_password_enabled: false
     ssh_public_keys:
-      - path: "/home/{{ admin_username }}/.ssh/authorized_keys"
+      - path: "/home/{{ site_admin_user }}/.ssh/authorized_keys"
         key_data: "{{ ssh_key_data }}"
     network_interfaces: "{{ nic }}"
+    availability_set: "{{ vmname }}-avs-managed-disk"
+    managed_disk_type: StandardSSD_LRS
     image: "{{ azure_image }}"
 
 ...

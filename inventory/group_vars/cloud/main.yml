@@ -3,11 +3,12 @@ virtual_machine: "{{ inventory_hostname }}"
 public_ip: "{{ virtual_machine }}PublicIP"
 nic: "{{ virtual_machine }}VMNic"
 security_group: "{{ site_resource_group }}{{ virtual_machine }}secgroup1"
-flavor: Standard_DS1_v2
+#flavor: Standard_DS1_v2
+flavor: Standard_D2as_v4
 azure_image:
-  offer: "RHEL"
-  publisher: "RedHat"
-  sku: '85-gen2'
+  offer: "rhel-raw"
+  publisher: "redhat"
+  sku: '84-gen2'
   version: latest
 
 image_src: "/root/{{ site_gold_image }}.vhd"

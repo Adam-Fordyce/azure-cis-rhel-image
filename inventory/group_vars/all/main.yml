@@ -1,10 +1,10 @@
 ---
 
-ansible_python_interpreter: /usr/bin/python3
-
 site_resource_group: cisrhimage
 site_storage_account: "{{ site_resource_group }}sa"
 site_storage_container: "{{ site_resource_group }}cont"
+
+data_disk_size: "500"
 
 gold_image: masterimage
 security_group_rules:
@@ -22,8 +22,9 @@ site_azure_supernet_cidr: "10.10.0.0/22"
 site_azure_subnet_cidr: "10.10.0.0/24"
 site_azure_region: uksouth
 
-azure_admin_user: clouduser
+site_admin_user: clouduser
 #azure_admin_pass: Passw0rd!
 # TODO: Add ssh key
-ssh_key_data:
+ssh_key_data: >-
+  ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDGtF71gtkxMKIoScrJC5/gukIbkopfVfdLwsxgRZfCmO8B9H483UaTdf3Y03E7LWAsB6vcuberccQ5kQLmjGGIVxHcwPSIZtJ9vouWuFXk/Iv1Wt4kaVTb5ZPvqdqAhppo7xFPk/CWfJLDxvltBk0dOL7fgOq7l77C8WFD0rrFim9oCfnaiKHKeMeznNd/vbE77WxtmtbQxaeLW8qKfxRViDMkO+VbTDdpqMU56ShX1HLnuEfG2iDiWwX+8ZXCwbBUBinZ1Vvdk0Wmnw4uDI/m7eAmY6cd/iRmaJwgrHWeFowCNTgCvWNQoRqxqAj+sLJdXPMF6SEdTFXQfhuTo/6qoRDvr2MZpXHhtCVq3rj6oP99qwYWsJyKFjOsTzMhcT0w6l8zattOvFetFY8kUf0QAvrkNySeTZvg/tJtmdCRmMCRlUdJem2uHzXTNpndACfG5p5sUerdFOMc+znXrPwbyde4oQf2wMYSS7pxTwoWrvEtZmoRiGRHF5aoZooX8Ss= afordyce@LUK-5CG1379XNJ
 ...
