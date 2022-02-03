@@ -1,5 +1,7 @@
 ---
 
+ansible_python_interpreter: /usr/bin/python3
+
 site_resource_group: cisrhimage
 site_storage_account: "{{ site_resource_group }}sa"
 site_storage_container: "{{ site_resource_group }}cont"
