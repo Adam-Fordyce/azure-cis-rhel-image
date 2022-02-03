@@ -1,0 +1,27 @@
+---
+
+site_resource_group: cisrhimage
+site_storage_account: "{{ site_resource_group }}sa"
+site_storage_container: "{{ site_resource_group }}cont"
+
+gold_image: masterimage
+security_group_rules:
+  - name: SSH
+    protocol: Tcp
+    destination_port_range: 22
+    access: Allow
+    priority: 1001
+    direction: Inbound
+
+virtual_network: provisionervnet1
+virtual_subnet: provisionersubnet1
+
+site_azure_supernet_cidr: "10.10.0.0/22"
+site_azure_subnet_cidr: "10.10.0.0/24"
+site_azure_region: uksouth
+
+azure_admin_user: clouduser
+#azure_admin_pass: Passw0rd!
+# TODO: Add ssh key
+ssh_key_data:
+...

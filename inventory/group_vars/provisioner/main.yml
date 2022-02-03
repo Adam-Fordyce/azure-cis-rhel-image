@@ -1,0 +1,16 @@
+---
+virtual_machine: "{{ inventory_hostname }}"
+public_ip: "{{ virtual_machine }}PublicIP"
+nic: "{{ virtual_machine }}VMNic"
+security_group: "{{ site_resource_group }}{{ virtual_machine }}secgroup1"
+flavor: Standard_DS1_v2
+azure_image:
+  offer: "RHEL"
+  publisher: "RedHat"
+  sku: '85-gen2'
+  version: latest
+
+image_src: "/root/{{ site_gold_image }}.vhd"
+image_dest: "{{ site_gold_image }}.vhd"
+image_URI: "https://{{ site_storage_account }}.blob.core.windows.net/{{ site_storage_container }}/{{ site_image_dest }}"
+...
