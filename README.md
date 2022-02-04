@@ -151,6 +151,8 @@ Create a hardened CIS image in azure using Ansible
 
     > This will result in a RHEL8 VM being started in Azure
 
+    > Access the WebUI using: `{{ public IP address }}:9090` use the inventory user details for access.
+
 1. To stop the VM and destroy the Azure resources enter the following command:
 
     ```
