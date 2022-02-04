@@ -165,3 +165,7 @@ The following diagram reflects the various stages of deployment that are employe
     ansible-playbook -i inventory plays/destroy_azure.yml
     # Wait...
     ```
+
+## Author
+
+Adam Fordyce
