@@ -6,7 +6,7 @@ This prject will facilitate a custom RHEL image in Azure using the RedHat Image 
 
 The following diagram reflects the various stages of deployment that are employed by the ansible code.
 
-![Diagram of Ansible workflow](docs/CIS\ Hardened\ Image.drawio.png)
+![Diagram of Ansible workflow](docs/CIS%20Hardened%20Image.drawio.png)
 ## Setup
 
 ### Azure Setup
