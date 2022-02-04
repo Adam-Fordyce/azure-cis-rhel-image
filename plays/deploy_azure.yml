@@ -31,6 +31,11 @@
     - name: Set Fact
       set_fact:
         ip_address: "{{ output_ip_address.state.ip_address }}"
+
+    - name: Add the new Azure host key to known hosts
+      connection: local
+      shell: "ssh-keyscan -H {{ ip_address }} >> ~/.ssh/known_hosts"
+
 # TODO: Get provisioner IP address
 # TODO: Update Ansible variable to use public IP
 # TODO: Update Ansible to use correct SSH key
@@ -41,30 +46,51 @@
   vars:
     ansible_host: "{{ hostvars['localhost'].ip_address }}"
     ansible_ssh_private_key_file: "{{ playbook_dir }}/../id_rsa"
+    ansible_user: "{{ site_admin_user }}"
+
   tasks:
-    - name: "Work on remote"
-      debug:
-        var: ansible_facts
+    - name: Install Dependencies
+      yum:
+        name: "{{ package }}"
+        state: latest
+      loop:
+        - lorax
+        - lorax-composer
+        - composer-cli
+        - cockpit-composer
+      loop_control:
+        loop_var: package
+        label: "Install {{ package }}"
+
+    - name: Update the firewall access for the cockpit service
+      firewalld:
+        service: cockpit
+        permanent: yes
+        state: enabled
+
+    - name: Enable the cockpit socket
+      service:
+        name: cockpit.socket
+        state: started
+        enabled: yes
+
+    - name: Enable the osbuild-composer socket
+      service:
+        name: osbuild-composer.socket
+        state: started
+        enabled: yes
+
+    - name: Start the osbuild-composer service
+      service:
+        name: osbuild-composer
+        state: started
+        enabled: yes
 
     #- name: "Create Image"
     #  include_tasks: "{{ item }}"
     #  loop:
-    #    - tasks/create_storage_container.yml
-    #    - tasks/create_storage_blob.yml
-    #    - tasks/create_image_from_vhd.yml
+    #    - ../tasks/create_storage_container.yml
+    #    - ../tasks/create_storage_blob.yml
+    #    - ../tasks/create_image_from_vhd.yml
 
-    - name: Exit
-      fail:
-        msg: "ERROR"
-
-- name: Start VM instances using Custom Image
-  hosts: provisioner
-  become: yes
-  tasks:
-
-    - name: "Create Image"
-      include_tasks: "{{ item }}"
-      loop:
-        - tasks/create_storage_container.yml
-        - tasks/create_storage_blob.yml
 ...
