@@ -28,12 +28,9 @@
         label: "Creating cloud VM {{ hostvars[vm].inventory_hostname }}"
       register: vm_output
 
-    - debug:
-        var: vm_output
-
-    - fail:
-        msg: £xit
-
+    - name: Set Fact
+      set_fact:
+        ip_address: "{{ output_ip_address.state.ip_address }}"
 # TODO: Get provisioner IP address
 # TODO: Update Ansible variable to use public IP
 # TODO: Update Ansible to use correct SSH key
@@ -41,14 +38,24 @@
 - name: Create Custom Image
   hosts: provisioner
   become: yes
+  vars:
+    ansible_host: "{{ hostvars['localhost'].ip_address }}"
+    ansible_ssh_private_key_file: "{{ playbook_dir }}/../id_rsa"
   tasks:
+    - name: "Work on remote"
+      debug:
+        var: ansible_facts
 
-    - name: "Create Image"
-      include_tasks: "{{ item }}"
-      loop:
-        - tasks/create_storage_container.yml
-        - tasks/create_storage_blob.yml
-        - tasks/create_image_from_vhd.yml
+    #- name: "Create Image"
+    #  include_tasks: "{{ item }}"
+    #  loop:
+    #    - tasks/create_storage_container.yml
+    #    - tasks/create_storage_blob.yml
+    #    - tasks/create_image_from_vhd.yml
+
+    - name: Exit
+      fail:
+        msg: "ERROR"
 
 - name: Start VM instances using Custom Image
   hosts: provisioner
