@@ -1,6 +1,12 @@
 # azure-cis-rhel-image
 Create a hardened CIS image in azure using Ansible
+## Overview
 
+This prject will facilitate a custom RHEL image in Azure using the RedHat Image Builder application.
+
+The following diagram reflects the various stages of deployment that are employed by the ansible code.
+
+![Diagram of Ansible workflow](docs/CIS\ Hardened\ Image.drawio.png)
 ## Setup
 
 ### Azure Setup
