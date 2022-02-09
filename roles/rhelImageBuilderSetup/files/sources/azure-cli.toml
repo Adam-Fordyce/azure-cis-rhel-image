@@ -1,0 +1,7 @@
+[azure-cli]
+name = "azure-cli"
+type = "yum-baseurl"
+url = "https://packages.microsoft.com/yumrepos/azure-cli"
+check_gpg = true
+check_ssl = true
+system = true

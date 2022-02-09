@@ -7,7 +7,7 @@ image_users:
   - blueprint_user: provisioner
     blueprint_user_description: "RHEL Provisioning User"
     blueprint_user_password: "$6$332R2YYamK0JP4kg$xH7stET.3Cm7RNCTr85DtKeigBQh92kOBGWBqr0cE5MBMRIV8D/tx/F4xsCsVkQo03y7ilUH0YYPcXuHtT6RD."
-    blueprint_user_ssh_key: "{{ vault_ssh_key_data }}"
+    blueprint_user_ssh_key: "{{ vault_ssh_public_key_data | trim }}"
     blueprint_user_home: "/home/provisioner/"
     blueprint_user_shell: "/usr/bin/bash"
     blueprint_user_groups:

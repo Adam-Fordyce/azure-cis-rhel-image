@@ -6,42 +6,18 @@
   command: uname -m
   register: rhib_arch
 
-- name: Install Dependencies
-  yum:
-    name: "{{ package }}"
-    state: latest
-  loop:
-    - lorax
-    - lorax-composer
-    - composer-cli
-    - cockpit-composer
-  loop_control:
-    loop_var: package
-    label: "Install {{ package }}"
+# TODO: Make the release an invntory fact
+- name: Set the subscription-manager release
+  shell:
+    cmd: subscription-manager release --set=8.4
 
-- name: Update the firewall access for the cockpit service
-  firewalld:
-    service: cockpit
-    permanent: yes
-    state: enabled
+- name: yum clean all
+  shell:
+    cmd: yum clean all
 
-- name: Enable the cockpit socket
-  service:
-    name: cockpit.socket
-    state: started
-    enabled: yes
-
-- name: Enable the osbuild-composer socket
-  service:
-    name: osbuild-composer.socket
-    state: started
-    enabled: yes
-
-- name: Start the osbuild-composer service
-  service:
-    name: osbuild-composer
-    state: started
-    enabled: yes
+- name: Disable default repos
+  shell:
+    cmd: subscription-manager repos --disable="*"
 
 - name: Enable repositories for RHEL for SAP Solutions
   rhsm_repository:
@@ -56,18 +32,107 @@
   loop_control:
     loop_var: repo
     label: "Enabling: {{ repo }}"
+  tags:
+    - install
 
 - name: Enable Ansible Engine repository
   rhsm_repository:
     name: "ansible-2.8-for-rhel-8-{{ rhib_arch.stdout }}-rpms"
+  tags:
+    - install
 
-# TODO: Fix this as it breaks yum/dnf
-#- name: Setup repositories for Azure CLI
-#  command: rpm --import https://packages.microsoft.com/keys/microsoft.asc
+- name: "Install dependent packages"
+  yum:
+    name: curl
+    state: latest
 
-#- name: Create the Azure CLI repo file
-#  copy:
-#    src: azure-cli.repo
-#    dest: /etc/yum.repos.d/azure-cli.repo
+- name: Setup Azure GPG key
+  shell:
+    cmd: >
+      curl -sL https://packages.microsoft.com/keys/microsoft.asc |
+      tee /etc/pki/rpm-gpg/RPM-GPG-KEY-microsoft-azure-release > /dev/null
+
+- name: Create the Azure CLI repo file
+  copy:
+    src: azure-cli.repo
+    dest: /etc/yum.repos.d/azure-cli.repo
+
+- name: Install Dependencies
+  yum:
+    name: "{{ package }}"
+    state: latest
+  loop:
+    - osbuild-composer
+    - composer-cli
+    - cockpit-composer
+  loop_control:
+    loop_var: package
+    label: "Install {{ package }}"
+  tags:
+    - install
+
+- name: Add user to the weldr group
+  shell: "usermod -a -G weldr {{ ansible_user }}"
+
+- name: Update the firewall access for the cockpit service
+  firewalld:
+    service: cockpit
+    permanent: yes
+    state: enabled
+  tags:
+    - install
+
+- name: Enable the cockpit socket
+  service:
+    name: cockpit.socket
+    state: started
+    enabled: yes
+  tags:
+    - install
+
+- name: Enable the osbuild-composer socket
+  service:
+    name: osbuild-composer.socket
+    state: started
+    enabled: yes
+  tags:
+    - install
+
+- name: Start the osbuild-composer service
+  service:
+    name: osbuild-composer
+    state: started
+    enabled: yes
+  tags:
+    - install
+
+- name: Create tempdir
+  tempfile:
+    state: directory
+  register: rhib_tempdir
+
+- name: Create the osbuild-composer configuration structure
+  file:
+    path: "/etc/osbuild-composer/repositories"
+    state: directory
+    mode: "0755"
+
+- name: Copy the redhat repository sources in for the osbuild-composer service
+  copy:
+    src: "rhel-8.json"
+    dest: "/etc/osbuild-composer/repositories/"
+    mode: "0755"
+  notify: restart osbuild-composer
+
+- name: Copy package sources to server
+  copy:
+    src: "sources/azure-cli.toml"
+    dest: "{{ rhib_tempdir.path }}/"
+  notify: restart osbuild-composer
+
+- name: Add sources to osimage-composer
+  shell:
+    cmd: "composer-cli sources add {{ rhib_tempdir.path }}/azure-cli.toml"
+  notify: restart osbuild-composer
 
 ...

@@ -1,14 +1,14 @@
 ---
-# Playbook to create CIS hardened RHEL image on Azure
-- name: Create Azure Environment
+# Playbook to destroy CIS hardened RHEL image on Azure
+- name: Destroy Azure Environment
   hosts: localhost
   connection: local
   tasks:
-
-# TODO: Possibly loop over hostvars['provisioners']
     - name: "Destroy Provisioner VM"
-      include_tasks: ../tasks/delete_vm.yml
+      include_role:
+        name: azureVm
       vars:
+        state: absent
         vmname: "{{ hostvars[vm].inventory_hostname }}"
         security_group: "{{ hostvars[vm].security_group }}"
         public_ip: "{{ hostvars[vm].public_ip }}"
@@ -19,9 +19,8 @@
       register: vm_output
 
     - name: "Remove Azure Components"
-      include_tasks: "{{ item }}"
-      loop:
-        - ../tasks/delete_subnet.yml
-        - ../tasks/delete_virtual_network.yml
-        - ../tasks/delete_resource_group.yml
+      include_role:
+        name: azureVpc
+      vars:
+        state: absent
 ...

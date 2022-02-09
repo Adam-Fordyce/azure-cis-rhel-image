@@ -1,0 +1,7 @@
+---
+- name: Restart osbuild-composer service
+  service:
+    name: osbuild-composer.service
+    state: restarted
+  listen: "restart osbuild-composer"
+...

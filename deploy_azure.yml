@@ -4,6 +4,12 @@
   hosts: localhost
   connection: local
   tasks:
+    - name: Unpack SSH Private key
+      copy:
+        content: "{{ vault_ssh_private_key_data }}"
+        dest: "{{ playbook_dir }}/{{ vault_ssh_private_key_name }}"
+        mode: "0600"
+
     - name: "Create the Azure VPC"
       include_role:
         name: azureVpc
@@ -40,7 +46,7 @@
   become: yes
   vars:
     ansible_host: "{{ hostvars['localhost'].ip_address }}"
-    ansible_ssh_private_key_file: "{{ playbook_dir }}/{{ vault_ssh_key_name }}"
+    ansible_ssh_private_key_file: "{{ playbook_dir }}/{{ vault_ssh_private_key_name }}"
     ansible_user: "{{ vault_admin_user }}"
   roles:
     - rhelSubscriptionManagementSetup

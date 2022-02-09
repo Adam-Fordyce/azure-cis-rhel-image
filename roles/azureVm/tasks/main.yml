@@ -45,7 +45,7 @@
         ssh_password_enabled: false
         ssh_public_keys:
           - path: "/home/{{ vault_admin_user }}/.ssh/authorized_keys"
-            key_data: "{{ vault_ssh_key_data }}"
+            key_data: "{{ vault_ssh_public_key_data }}"
         network_interfaces: "{{ nic }}"
         availability_set: "{{ vmname }}-avs-managed-disk"
         managed_disk_type: StandardSSD_LRS
@@ -57,6 +57,14 @@
   when: state == 'present'
 
 - block:
+
+    - name: Delete VM
+      azure_rm_virtualmachine:
+        resource_group: "{{ site_resource_group }}"
+        name: "{{ vmname }}"
+        remove_on_absent: all
+        state: absent
+
     - name: Delete an availability set for managed disk vm
       azure_rm_availabilityset:
         name: "{{ vmname }}-avs-managed-disk"

@@ -2,7 +2,7 @@
 - name: Delete subnet
   azure_rm_subnet:
     resource_group: "{{ site_resource_group }}"
-    site_virtual_network_name: "{{ site_virtual_network }}"
+    virtual_network_name: "{{ site_virtual_network }}"
     name: "{{ site_virtual_network_subnet }}"
     state: absent
 ...

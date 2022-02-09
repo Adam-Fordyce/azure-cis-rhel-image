@@ -13,9 +13,20 @@
     src: blueprint.toml.j2
     dest: "{{ rhbc_temp.path }}/{{ site_image_name }}.toml"
 
-- name: Register VM blueprint with RHEL ImageBuilder
+- name: "Push blueprint {{ site_image_name }} to the ImageBuilder"
   shell: composer-cli blueprints push "{{ rhbc_temp.path }}/{{ site_image_name }}.toml"
 
+- name: "Solve package dependencies for {{ site_image_name }}"
+  shell: composer-cli blueprints depsolve "{{ rhbc_temp.path }}/{{ site_image_name }}.toml"
+
+# TODO: add azure.toml at end of the shell command, this will allow the image to be uploaded to Azure
+#
+#provider = "azure"
+#[settings]
+#storageAccount = "your storage account name"
+#storageAccessKey = "storage access key you copied in the Azure portal"
+#container = "your storage container name"
+#
 - name: Create the the VM image
   shell: "composer-cli compose start {{ site_image_name }} {{ site_image_format }}"
 

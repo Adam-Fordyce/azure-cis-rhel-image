@@ -138,22 +138,59 @@ The following diagram reflects the various stages of deployment that are employe
         ```
         chmod 600 id_rsa
         ```
-    1. Edit `inventory/group_vars/all/main.yml` and update the `ssh_key_data` variable
-    1. Get the data for the ssh_key_data variable
+    1. Create an ansible vault file
         ```
-        cat ~/.ssh/id_rsa.pub
+        ansible-vault create inventory/group_vars/all/vault
+        [Enter Password]
+        [Confirm Password]
         ```
-    1. Copy this information and paste it into the `inventory/group_vars/all/main.yml`
+
+    1. Create a vault ID file on the local machine
+        1. mkdir -p ~/vault_secrets/
+        1. echo "<my vault password>" > ~/vault_secrets/pw
+
+    1. Edit the ansible vault file
+        ```
+        ansible-vault --vault-id ~/vault_secrets/pw edit inventory/group_vars/all/vault
+        ```
+
+    1. Populate the vault file with the required parameters, the template is shown below
+        ```
+        ---
+        # Azure Credentials
+        vault_azure_subscription_id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+        vault_azure_client_id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+        vault_azure_secret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+        vault_azure_tenant: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+
+        # Redhat Subscription
+        vault_rhel_subscription_username: <rhel registered email address>
+        vault_rhel_subscription_password: <rhel account password>
+
+        # Ansible Vault Contents
+        # Get the data for the vault_ssh_key_data using: cat ~/.ssh/id_rsa.pub | cat ~/.ssh/id_rsa
+        vault_admin_user: <username>
+        vault_admin_pass: <password>
+        vault_ssh_public_key_name: <key_name>.pub  # e.g. id_rsa.pub
+        vault_ssh_public_key_data: >-
+            ssh-rsa ######################################################################################################################
+        vault_ssh_key_name: <key_name>  # e.g. id_rsa
+        vault_ssh_key_data: >-
+            -----BEGIN OPENSSH PRIVATE KEY-----
+            ######################################################################
+            ######################################################################
+            ######################################################################
+            -----END OPENSSH PRIVATE KEY-----
+        ...
+        ```
     1. Save and close the file
 
 ## Deployment
 
-1. The Ansible inventory has two hosts defined initially
-    1. localhost - The local machine in the controller group
+1. The Ansible inventory has a single host defined for the purpose of creating cloud images.
     1. provisioner - The remote RHEL machine used to stage the images, this is in the cloud group
-
         ```
-        ansible-inventory -i inventory --graph
+        ansible-inventory --vault-id ~/vault_secrets/pw -i inventory --graph
 
         @all:
         |--@cloud:
@@ -164,18 +201,18 @@ The following diagram reflects the various stages of deployment that are employe
 1. Run the following command from the root folder in the cloned repository
 
     ```
-    ansible-playbook -i inventory deploy_azure.yml
-    # Wait...
+    ansible-playbook --vault-id ~/vault_secrets/pw -i inventory deploy_azure.yml
+    # Wait and monitor output
     ```
 
     > This will result in a RHEL8 VM being started in Azure
 
-    > Access the WebUI using: `{{ public IP address }}:9090` use the inventory user details for access.
+    > Access the WebUI using: `{{ public IP address }}:9090` use the inventory user details for access. Accepting security warning as no SSL certificate has been created.
 
 1. To stop the VM and destroy the Azure resources enter the following command:
 
     ```
-    ansible-playbook -i inventory plays/destroy_azure.yml
+    ansible-playbook --vault-id ~/vault_secrets/pw -i inventory destroy_azure.yml
     # Wait...
     ```
 
