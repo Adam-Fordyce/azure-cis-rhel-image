@@ -1,11 +1,10 @@
 ---
 
-# TODO: Add these items to a vault
 - name: Register with RedHat Subscription Manager
   redhat_subscription:
     state: present
-    username: "{{ vault_rhel_subscription_username }}"
-    password: "{{ vault_rhel_subscription_password }}"
+    username: "{{ rhel_username }}"
+    password: "{{ rhel_password }}"
     auto_attach: yes
 
 ...

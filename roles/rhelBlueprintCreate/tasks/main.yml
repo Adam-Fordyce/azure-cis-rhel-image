@@ -11,13 +11,13 @@
 - name: Create blueprint.toml
   template:
     src: blueprint.toml.j2
-    dest: "{{ rhbc_temp.path }}/{{ site_image_name }}.toml"
+    dest: "{{ rhbc_temp.path }}/{{ image_name }}.toml"
 
-- name: "Push blueprint {{ site_image_name }} to the ImageBuilder"
-  shell: composer-cli blueprints push "{{ rhbc_temp.path }}/{{ site_image_name }}.toml"
+- name: "Push blueprint {{ image_name }} to the ImageBuilder"
+  shell: composer-cli blueprints push "{{ rhbc_temp.path }}/{{ image_name }}.toml"
 
-- name: "Solve package dependencies for {{ site_image_name }}"
-  shell: composer-cli blueprints depsolve "{{ rhbc_temp.path }}/{{ site_image_name }}.toml"
+- name: "Solve package dependencies for {{ image_name }}"
+  shell: composer-cli blueprints depsolve "{{ rhbc_temp.path }}/{{ image_name }}.toml"
 
 # TODO: add azure.toml at end of the shell command, this will allow the image to be uploaded to Azure
 #
@@ -28,7 +28,7 @@
 #container = "your storage container name"
 #
 - name: Create the the VM image
-  shell: "composer-cli compose start {{ site_image_name }} {{ site_image_format }}"
+  shell: "composer-cli compose start {{ image_name }} {{ image_format }}"
 
 # TODO: Poll command and wait until it is finished before proceeding
 - name: Wait for image to be created

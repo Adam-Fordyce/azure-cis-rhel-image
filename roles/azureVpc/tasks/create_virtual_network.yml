@@ -1,7 +1,7 @@
 ---
 - name: Create a virtual network
   azure_rm_virtualnetwork:
-    resource_group: "{{ site_resource_group }}"
-    name: "{{ site_virtual_network }}"
-    address_prefixes: "{{ site_supernet_cidr }}"
+    resource_group: "{{ resource_group }}"
+    name: "{{ virtual_network }}"
+    address_prefixes: "{{ supernet_cidr }}"
 ...

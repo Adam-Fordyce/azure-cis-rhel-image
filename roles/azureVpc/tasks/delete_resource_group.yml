@@ -2,8 +2,8 @@
 
 - name: Delete resource group
   azure_rm_resourcegroup:
-    name: "{{ site_resource_group }}"
-    location: "{{ site_azure_region }}"
+    name: "{{ resource_group }}"
+    location: "{{ azure_region }}"
     state: absent
 
 ...

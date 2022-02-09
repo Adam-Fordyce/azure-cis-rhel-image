@@ -1,8 +1,8 @@
 ---
 - name: Delete virtual network
   azure_rm_virtualnetwork:
-    resource_group: "{{ site_resource_group }}"
-    name: "{{ site_virtual_network }}"
+    resource_group: "{{ resource_group }}"
+    name: "{{ virtual_network }}"
     state: absent
 
 ...

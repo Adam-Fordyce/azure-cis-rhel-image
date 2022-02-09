@@ -23,4 +23,11 @@
         name: azureVpc
       vars:
         state: absent
+        resource_group: "{{ site_resource_group }}"
+        azure_region: "{{ site_azure_region }}"
+        virtual_network_subnet: "{{ site_virtual_network_subnet }}"
+        subnet_cidr: "{{ site_subnet_cidr }}"
+        supernet_cidr: "{{ site_supernet_cidr }}"
+        virtual_network: "{{ site_virtual_network }}"
+
 ...

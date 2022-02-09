@@ -15,6 +15,12 @@
         name: azureVpc
       vars:
         state: present
+        resource_group: "{{ site_resource_group }}"
+        azure_region: "{{ site_azure_region }}"
+        virtual_network_subnet: "{{ site_virtual_network_subnet }}"
+        subnet_cidr: "{{ site_subnet_cidr }}"
+        supernet_cidr: "{{ site_supernet_cidr }}"
+        virtual_network: "{{ site_virtual_network }}"
 
     - name: "Create Provisioner VM"
       include_role:
@@ -48,13 +54,25 @@
     ansible_host: "{{ hostvars['localhost'].ip_address }}"
     ansible_ssh_private_key_file: "{{ playbook_dir }}/{{ vault_ssh_private_key_name }}"
     ansible_user: "{{ vault_admin_user }}"
-  roles:
-    - rhelSubscriptionManagementSetup
-    - rhelImageBuilderSetup
-    - rhelBlueprintCreate
   tasks:
-    - name: "Complete"
-      debug:
-        msg: "Complete"
+
+    - name: Activate the RHEL subscription
+      include_role:
+        name: rhelSubscriptionManagementSetup
+      vars:
+        rhel_username: "{{ vault_rhel_subscription_username }}"
+        rhel_password: "{{ vault_rhel_subscription_password }}"
+
+    - name: Prepare osbuild-composer to generate a SAP image
+      include_role:
+        name: rhelImageBuilderSetup
+
+    - name: Create the cloud image
+      include_role:
+        name: rhelBlueprintCreate
+      vars:
+        image_name: "{{ site_image_name }}"
+        image_format: "{{ site_image_format }}"
+
 
 ...
