@@ -1,0 +1,20 @@
+---
+
+- block:
+  - name: Create Azure VPC
+    include_tasks: "{{ item }}"
+    loop:
+      - tasks/create_resource_group.yml
+      - tasks/create_virtual_network.yml
+      - tasks/create_subnet.yml
+  when: state == 'present'
+
+- block:
+  - name: Create Azure VPC
+    include_tasks: "{{ item }}"
+    loop:
+      - tasks/delete_subnet.yml
+      - tasks/delete_virtual_network.yml
+      - tasks/delete_resource_group.yml
+  when: state == 'absent'
+...

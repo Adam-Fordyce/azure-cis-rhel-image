@@ -1,2 +1,9 @@
-id_rsa
+# SSH keys
+id_*
+
+# Vault file
+vault
+
+# Azure configuration file
 .azure
+*.swp

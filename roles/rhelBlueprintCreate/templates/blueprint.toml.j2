@@ -1,0 +1,25 @@
+name = "{{ site_image_name }}"
+description = "RHEL for SAP Solutions"
+version = "{{ blueprint_version }}"
+modules = []
+groups = []
+
+{% for pkg in blueprint_packages %}
+[[packages]]
+name = "{{ pkg.name }}"
+version = "{{ pkg.version }}"
+
+{% endfor %}
+
+[customizations]
+
+{% for u in image_users %}
+[[customizations.user]]
+name = "{{ u.blueprint_user }}"
+description = "{{ u.blueprint_user_description }}"
+password = "{{ u.blueprint_user_password }}"
+key = "{{ u.blueprint_user_ssh_key }}"
+home = "{{ u.blueprint_user_home }}"
+shell = "{{ u.blueprint_user_shell }}"
+groups = {{ u.blueprint_user_groups }}
+{% endfor %}

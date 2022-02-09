@@ -148,10 +148,23 @@ The following diagram reflects the various stages of deployment that are employe
 
 ## Deployment
 
+1. The Ansible inventory has two hosts defined initially
+    1. localhost - The local machine in the controller group
+    1. provisioner - The remote RHEL machine used to stage the images, this is in the cloud group
+
+        ```
+        ansible-inventory -i inventory --graph
+
+        @all:
+        |--@cloud:
+        |  |--provisioner
+        |--@ungrouped:
+        ```
+
 1. Run the following command from the root folder in the cloned repository
 
     ```
-    ansible-playbook -i inventory plays/deploy_azure.yml
+    ansible-playbook -i inventory deploy_azure.yml
     # Wait...
     ```
 

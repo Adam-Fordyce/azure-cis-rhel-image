@@ -7,10 +7,6 @@
     name: "{{ public_ip }}"
   register: output_ip_address
 
-- name: Public IP of VM
-  debug:
-    msg: "The public IP is {{ output_ip_address.state.ip_address }}."
-
 - name: Create Network Security Group that allows SSH
   azure_rm_securitygroup:
     resource_group: "{{ site_resource_group }}"
@@ -21,15 +17,14 @@
   azure_rm_networkinterface:
     resource_group: "{{ site_resource_group }}"
     name: "{{ nic }}"
-    virtual_network: "{{ virtual_network }}"
-    subnet: "{{ virtual_subnet }}"
+    virtual_network: "{{ site_virtual_network }}"
+    subnet: "{{ site_virtual_network_subnet }}"
     security_group: "{{ security_group }}"
     ip_configurations:
       - name: ipconfig1
         public_ip_address_name: "{{ public_ip }}"
         primary: True
 
-# TODO: Add location
 - name: Create an availability set for managed disk vm
   azure_rm_availabilityset:
     name: "{{ vmname }}-avs-managed-disk"
@@ -37,20 +32,26 @@
     platform_update_domain_count: 5
     platform_fault_domain_count: 2
     sku: Aligned
+    location: "{{ site_azure_region }}"
 
 - name: Create VM
   azure_rm_virtualmachine:
     resource_group: "{{ site_resource_group }}"
     name: "{{ vmname }}"
     vm_size: "{{ flavor }}"
-    admin_username: "{{ site_admin_user }}"
+    admin_username: "{{ vault_admin_user }}"
+    admin_password: "{{ vault_admin_pass }}"
     ssh_password_enabled: false
     ssh_public_keys:
-      - path: "/home/{{ site_admin_user }}/.ssh/authorized_keys"
-        key_data: "{{ ssh_key_data }}"
+      - path: "/home/{{ vault_admin_user }}/.ssh/authorized_keys"
+        key_data: "{{ vault_ssh_key_data }}"
     network_interfaces: "{{ nic }}"
     availability_set: "{{ vmname }}-avs-managed-disk"
     managed_disk_type: StandardSSD_LRS
     image: "{{ azure_image }}"
+
+- name: Public IP of VM
+  debug:
+    msg: "The public IP is {{ output_ip_address.state.ip_address }}."
 
 ...

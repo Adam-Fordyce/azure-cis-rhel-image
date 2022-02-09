@@ -1,0 +1,44 @@
+---
+# Vars file for rhelBlueprintCreate
+
+# Generate sha512 hashed password using:
+# python3 -c "import crypt, getpass; print(crypt.crypt(getpass.getpass(), crypt.METHOD_SHA512))"
+image_users:
+  - blueprint_user: provisioner
+    blueprint_user_description: "RHEL Provisioning User"
+    blueprint_user_password: "$6$332R2YYamK0JP4kg$xH7stET.3Cm7RNCTr85DtKeigBQh92kOBGWBqr0cE5MBMRIV8D/tx/F4xsCsVkQo03y7ilUH0YYPcXuHtT6RD."
+    blueprint_user_ssh_key: "{{ vault_ssh_key_data }}"
+    blueprint_user_home: "/home/provisioner/"
+    blueprint_user_shell: "/usr/bin/bash"
+    blueprint_user_groups:
+      - users
+      - wheel
+
+blueprint_version: "0.0.1"
+blueprint_packages:
+  - name: ansible
+    version: "*"
+  - name: azure-cli
+    version: "*"
+  - name: gcc
+    version: "*"
+  - name: libffi-devel
+    version: "*"
+  - name: platform-python-devel
+    version: "*"
+  - name: openssl-devel
+    version: "*"
+  - name: python3-pip
+    version: "*"
+  - name: python3-wheel
+    version: "*"
+  - name: rhel-system-roles-sap
+    version: "*"
+  - name: git
+    version: "*"
+  - name: nfs-utils
+    version: "*"
+  - name: openssh
+    version: "*"
+
+...

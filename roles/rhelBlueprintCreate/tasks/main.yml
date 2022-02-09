@@ -1,0 +1,35 @@
+---
+# Main tasks file for rhelBlueprintCreate role
+# Variables are prefixed with "rhbc_"
+
+- name: Create tempdir
+  tempfile:
+    state: directory
+    suffix: blueprint
+  register: rhbc_temp
+
+- name: Create blueprint.toml
+  template:
+    src: blueprint.toml.j2
+    dest: "{{ rhbc_temp.path }}/{{ site_image_name }}.toml"
+
+- name: Register VM blueprint with RHEL ImageBuilder
+  shell: composer-cli blueprints push "{{ rhbc_temp.path }}/{{ site_image_name }}.toml"
+
+- name: Create the the VM image
+  shell: "composer-cli compose start {{ site_image_name }} {{ site_image_format }}"
+
+# TODO: Poll command and wait until it is finished before proceeding
+- name: Wait for image to be created
+  shell: composer-cli compose status
+  async: "1200"
+  poll: "05"
+  register: rhbc_image_create
+
+- name: "Debug"
+  debug:
+    var: rhbc_image_create.stdout_lines
+
+# TODO: Get the image uuid
+
+...

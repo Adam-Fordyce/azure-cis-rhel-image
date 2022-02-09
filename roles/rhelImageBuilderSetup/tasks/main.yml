@@ -1,0 +1,73 @@
+---
+# Main task file for rhelImageBuilderSetup
+# Variables are prefixed with rhib_
+
+- name: Get arch
+  command: uname -m
+  register: rhib_arch
+
+- name: Install Dependencies
+  yum:
+    name: "{{ package }}"
+    state: latest
+  loop:
+    - lorax
+    - lorax-composer
+    - composer-cli
+    - cockpit-composer
+  loop_control:
+    loop_var: package
+    label: "Install {{ package }}"
+
+- name: Update the firewall access for the cockpit service
+  firewalld:
+    service: cockpit
+    permanent: yes
+    state: enabled
+
+- name: Enable the cockpit socket
+  service:
+    name: cockpit.socket
+    state: started
+    enabled: yes
+
+- name: Enable the osbuild-composer socket
+  service:
+    name: osbuild-composer.socket
+    state: started
+    enabled: yes
+
+- name: Start the osbuild-composer service
+  service:
+    name: osbuild-composer
+    state: started
+    enabled: yes
+
+- name: Enable repositories for RHEL for SAP Solutions
+  rhsm_repository:
+    name: "rhel-8-for-{{ rhib_arch.stdout }}-{{ repo }}-rpms"
+    state: enabled
+  loop:
+    - baseos-e4s
+    - appstream-e4s
+    - sap-solutions-e4s
+    - sap-netweaver-e4s
+    - highavailability-e4s
+  loop_control:
+    loop_var: repo
+    label: "Enabling: {{ repo }}"
+
+- name: Enable Ansible Engine repository
+  rhsm_repository:
+    name: "ansible-2.8-for-rhel-8-{{ rhib_arch.stdout }}-rpms"
+
+# TODO: Fix this as it breaks yum/dnf
+#- name: Setup repositories for Azure CLI
+#  command: rpm --import https://packages.microsoft.com/keys/microsoft.asc
+
+#- name: Create the Azure CLI repo file
+#  copy:
+#    src: azure-cli.repo
+#    dest: /etc/yum.repos.d/azure-cli.repo
+
+...

@@ -1,9 +1,6 @@
 ---
 all:
   children:
-    controller:
-      hosts:
-        localhost:
     cloud:
       hosts:
         provisioner:

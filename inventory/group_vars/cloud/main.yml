@@ -11,7 +11,7 @@ azure_image:
   sku: '84-gen2'
   version: latest
 
-image_src: "/root/{{ site_gold_image }}.vhd"
-image_dest: "{{ site_gold_image }}.vhd"
+image_src: "/root/{{ site_image_name }}.vhd"
+image_dest: "{{ site_image_name }}.vhd"
 image_URI: "https://{{ site_storage_account }}.blob.core.windows.net/{{ site_storage_container }}/{{ site_image_dest }}"
 ...
