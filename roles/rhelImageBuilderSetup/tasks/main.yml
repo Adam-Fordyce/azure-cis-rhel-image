@@ -126,4 +126,6 @@
     cmd: "composer-cli sources add {{ rhib_tempdir.path }}/azure-cli.toml"
   notify: restart osbuild-composer
 
+- name: Flush the handlers now
+  meta: flush_handlers
 ...
