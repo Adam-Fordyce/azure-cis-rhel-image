@@ -3,7 +3,19 @@ virtual_machine: "{{ inventory_hostname }}"
 public_ip: "{{ virtual_machine }}PublicIP"
 nic: "{{ virtual_machine }}VMNic"
 security_group: "{{ site_resource_group }}{{ virtual_machine }}secgroup1"
-#flavor: Standard_DS1_v2
+security_group_rules:
+  - name: SSH
+    protocol: Tcp
+    destination_port_range: 22
+    access: Allow
+    priority: 1001
+    direction: Inbound
+  - name: OSBuild Composer (Weldr)
+    protocol: Tcp
+    destination_port_range: 9090
+    access: Allow
+    priority: 1002
+    direction: Inbound
 flavor: Standard_D2as_v4
 azure_image:
   offer: "rhel-raw"

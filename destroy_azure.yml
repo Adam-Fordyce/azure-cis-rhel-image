@@ -9,9 +9,20 @@
         name: azureVm
       vars:
         state: absent
-        vmname: "{{ hostvars[vm].inventory_hostname }}"
-        security_group: "{{ hostvars[vm].security_group }}"
+        resource_group: "{{ site_resource_group }}"
         public_ip: "{{ hostvars[vm].public_ip }}"
+        security_group: "{{ hostvars[vm].security_group }}"
+        security_group_rules: "{{ hostvars[vm].security_group_rules }}"
+        nic: "{{ hostvars[vm].nic }}"
+        flavor: "{{ hostvars[vm].flavor }}"
+        vmname: "{{ hostvars[vm].inventory_hostname }}"
+        azure_image: "{{ hostvars[vm].azure_image }}"
+        virtual_network: "{{ site_virtual_network }}"
+        virtual_network_subnet: "{{ site_virtual_network_subnet }}"
+        azure_region: "{{ site_azure_region }}"
+        admin_user: "{{ vault_admin_user }}"
+        admin_pass: "{{ vault_admin_pass }}"
+        ssh_key_public_data: "{{ vault_ssh_key_public_data }}"
       loop: "{{ groups['cloud'] }}"
       loop_control:
         loop_var: vm

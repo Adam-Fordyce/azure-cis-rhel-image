@@ -11,20 +11,4 @@ site_supernet_cidr: "10.10.0.0/22"
 site_subnet_cidr: "10.10.0.0/24"
 site_azure_region: uksouth
 
-# TODO: Make the security group rules group based and not global
-security_group_rules:
-  - name: SSH
-    protocol: Tcp
-    destination_port_range: 22
-    access: Allow
-    priority: 1001
-    direction: Inbound
-  - name: Lorax Composer
-    protocol: Tcp
-    destination_port_range: 9090
-    access: Allow
-    priority: 1002
-    direction: Inbound
-
-
 ...
