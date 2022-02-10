@@ -17,7 +17,7 @@
   shell: composer-cli blueprints push "{{ rhbc_temp.path }}/{{ image_name }}.toml"
 
 - name: "Solve package dependencies for {{ image_name }}"
-  shell: composer-cli blueprints depsolve "{{ rhbc_temp.path }}/{{ image_name }}.toml"
+  shell: composer-cli blueprints depsolve "{{ image_name }}"
 
 # TODO: add azure.toml at end of the shell command, this will allow the image to be uploaded to Azure
 #
