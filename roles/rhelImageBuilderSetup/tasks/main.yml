@@ -6,7 +6,7 @@
   command: uname -m
   register: rhib_arch
 
-# TODO: Make the release an invntory fact
+# TODO: Make the release an inventory fact
 - name: Set the subscription-manager release
   shell:
     cmd: subscription-manager release --set=8.4
@@ -32,14 +32,10 @@
   loop_control:
     loop_var: repo
     label: "Enabling: {{ repo }}"
-  tags:
-    - install
 
 - name: Enable Ansible Engine repository
   rhsm_repository:
     name: "ansible-2.8-for-rhel-8-{{ rhib_arch.stdout }}-rpms"
-  tags:
-    - install
 
 - name: "Install dependent packages"
   yum:
@@ -57,6 +53,11 @@
     src: azure-cli.repo
     dest: /etc/yum.repos.d/azure-cli.repo
 
+- name: Upgrade all packages
+  yum:
+    name: '*'
+    state: latest
+
 - name: Install Dependencies
   yum:
     name: "{{ package }}"
@@ -68,8 +69,6 @@
   loop_control:
     loop_var: package
     label: "Install {{ package }}"
-  tags:
-    - install
 
 - name: Add user to the weldr group
   shell: "usermod -a -G weldr {{ ansible_user }}"
@@ -79,32 +78,24 @@
     service: cockpit
     permanent: yes
     state: enabled
-  tags:
-    - install
 
 - name: Enable the cockpit socket
   service:
     name: cockpit.socket
     state: started
     enabled: yes
-  tags:
-    - install
 
 - name: Enable the osbuild-composer socket
   service:
     name: osbuild-composer.socket
     state: started
     enabled: yes
-  tags:
-    - install
 
 - name: Start the osbuild-composer service
   service:
     name: osbuild-composer
     state: started
     enabled: yes
-  tags:
-    - install
 
 - name: Create tempdir
   tempfile:
