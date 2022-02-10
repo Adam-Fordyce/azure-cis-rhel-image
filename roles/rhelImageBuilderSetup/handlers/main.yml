@@ -6,9 +6,16 @@
     state: restarted
   listen: "restart osbuild-composer"
 
-- name: Restart osbuild-worker service
+- name: Restart osbuild-worker@ service.d
+  service:
+    name: osbuild-worker@.service.d
+    state: restarted
+  listen: "restart osbuild-composer"
+
+- name: Restart osbuild-worker@ service
   service:
     name: osbuild-worker@1.service
     state: restarted
   listen: "restart osbuild-composer"
+
 ...
