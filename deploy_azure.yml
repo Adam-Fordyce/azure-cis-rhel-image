@@ -45,6 +45,7 @@
         azure_region: "{{ site_azure_region }}"
         admin_user: "{{ vault_admin_user }}"
         admin_pass: "{{ vault_admin_pass }}"
+        os_disk_size: "{{ hostvars[vm].os_disk_size }}"
         ssh_public_key_data: "{{ vault_ssh_public_key_data }}"
       loop: "{{ groups['cloud'] }}"
       loop_control:
@@ -97,8 +98,20 @@
       vars:
         image_name: "{{ site_image_name }}"
         image_format: "{{ site_image_format }}"
-        image_dest: "{{ host_image_dest }}"
-        ssh_private_key_name: "{{ vault_ssh_public_key_name }}"
-        ssh_private_key_data: "{{ vault_ssh_public_key_data }}"
+        image_dest: "{{ host_rawimage_dest }}"
+        ssh_public_key_name: "{{ vault_ssh_public_key_name }}"
+        ssh_public_key_data: "{{ vault_ssh_public_key_data }}"
+
+    - name: Customise the cloud image
+      include_role:
+        name: azureUploadImage
+      vars:
+        resource_group: "{{ site_resource_group }}"
+        storage_account: "{{ site_storage_account }}"
+        storage_container: "{{ site_storage_container }}"
+        image_name: "{{ site_image_name }}"
+        image_URI: "{{ host_image_URI }}"
+        image_format: "{{ site_image_format }}"
+        image_src: "{{ host_rawimage_dest }}"
 
 ...

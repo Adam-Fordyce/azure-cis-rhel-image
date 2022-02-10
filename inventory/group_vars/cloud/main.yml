@@ -23,7 +23,9 @@ azure_image:
   sku: '84-gen2'
   version: latest
 
-host_rawimage_dest: "/root/{{ site_image_name }}.vhd"
-host_image_dest: "/root/{{ site_image_name }}-final.vhd"
+os_disk_size: 200
+
+host_rawimage_dest: "/root/{{ site_image_name }}.{{ site_image_format }}"
+host_image_dest: "/root/{{ site_image_name }}-final.{{ site_image_format }}"
 host_image_URI: "https://{{ site_storage_account }}.blob.core.windows.net/{{ site_storage_container }}/{{ site_image_dest }}"
 ...

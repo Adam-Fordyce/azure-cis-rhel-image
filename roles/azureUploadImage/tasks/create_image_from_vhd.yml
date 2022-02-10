@@ -1,8 +1,8 @@
 ---
 - name: Create an image from os disk
   azure_rm_image:
-    resource_group: "{{ site_resource_group }}"
-    name: "{{ site_image_name }}"
+    resource_group: "{{ resource_group }}"
+    name: "{{ image_name }}"
     source: "{{ image_URI }}"
     os_type: Linux
 ...

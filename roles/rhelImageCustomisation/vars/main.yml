@@ -1,17 +1,17 @@
 ---
 packages:
   - name: qemu-kvm
-    version: "*"
+    state: latest
 
   - name: libvirt
-    version: "*"
+    state: latest
 
-  - name: libvirt-python
-    version: "*"
+  - name: python3-libvirt
+    state: latest
 
   - name: libguestfs-tools
-    version: "*"
+    state: latest
 
   - name: virt-install
-    version: "*"
+    state: latest
 ...

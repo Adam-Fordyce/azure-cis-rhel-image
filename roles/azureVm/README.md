@@ -30,6 +30,7 @@ A description of the settable variables for this role should go here, including 
 | azure_region            | yes      |         | n/a                       | Region in Azure where resources are      |
 | admin_user              | yes      |         | n/a                       | OS administrative user                   |
 | admin_pass              | yes      |         | n/a                       | OS administrative users password         |
+| os_disk_size            | yes      |         | n/a                       | OS disk size in GB                       |
 | ssh_public_key_data     | yes      |         | n/a                       | SSH Public key data                      |
 
 Dependencies
@@ -60,8 +61,9 @@ Example Playbook
     admin_user: "{{ vault_admin_user }}"
     admin_pass: "{{ vault_admin_pass }}"
     ssh_key_public_data: "{{ vault_ssh_key_public_data }}"
-    loop: "{{ groups['cloud'] }}"
-    loop_control:
+    os_disk_size: "{{ hostvars[vm].os_disk_size }}"
+  loop: "{{ groups['cloud'] }}"
+  loop_control:
     loop_var: vm
     label: "Creating cloud VM {{ hostvars[vm].inventory_hostname }}"
 ```

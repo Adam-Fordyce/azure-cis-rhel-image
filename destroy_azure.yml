@@ -41,4 +41,6 @@
         supernet_cidr: "{{ site_supernet_cidr }}"
         virtual_network: "{{ site_virtual_network }}"
 
+# TODO: Remove storage container and storage blob
+
 ...

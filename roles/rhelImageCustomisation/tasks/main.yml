@@ -5,11 +5,19 @@
 - name: "Install dependent packages"
   yum:
     name: "{{ pkg.name }}"
-    state: "{{ pkg.version }}"
+    state: "{{ pkg.state }}"
   loop: "{{ packages }}"
   loop_control:
     loop_var: pkg
     label: "Installing {{ pkg.name }}"
+  tags:
+    - install
+
+- name: Enable the cockpit socket
+  service:
+    name: libvird.service
+    state: started
+    enabled: yes
 
 - name: Create tempdir
   tempfile:
@@ -22,20 +30,31 @@
     dest: "{{ rhic_tempdir.path }}"
     mode: "0777"
 
+# TODO: Don't assume to use /root/
 - name: Unpack SSH Private key
   copy:
     content: "{{ ssh_public_key_data }}"
-    dest: "/home/{{ ansible_user }}/.ssh/{{ ssh_public_key_name }}"
+    dest: "/root/.ssh/{{ ssh_public_key_name }}"
     mode: "0600"
 
+# TODO: Take password from vault
+# TODO: Take alternate ssh key from vault (or generate a new one - preferably not RSA!)
+# TODO: Take hostname from configuration
+# TODO: Don't assume to use /root/
 - name: Embed the first boot script into the VHD image
   shell:
-    cmd: >
+    cmd: >-
+      export LIBGUESTFS_BACKEND=direct;
       virt-customize -a {{ image_dest }}
-        --firstboot {{ rhic_tempdir.path }}/run_on_bootstrap.sh
-        --root-password "password:redhat"
-        --hostname bootstrap
-        --ssh-inject root:file:./.ssh/{{ ssh_public_key_name }}
-        --selinux-relabel
+      --firstboot {{ rhic_tempdir.path }}/run_on_bootstrap.sh
+      --root-password "password:redhat"
+      --hostname bootstrap
+      --ssh-inject root:file:/root/.ssh/{{ ssh_public_key_name }}
+      --selinux-relabel
+
+- name: Remove tempdir
+  file:
+    path: "{{ rhic_temp.path }}"
+    state: absent
 
 ...

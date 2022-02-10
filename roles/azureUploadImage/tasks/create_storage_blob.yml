@@ -1,0 +1,11 @@
+---
+- name: Upload a blob image
+  azure_rm_storageblob:
+    resource_group: "{{ resource_group }}"
+    storage_account_name: "{{ storage_account }}"
+    container: "{{ storage_container }}"
+    blob: "{{ image_name }}.{{ image_format }}"
+    src: "{{ image_src }}"
+    public_access: container
+    blob_type: 'page'
+...

@@ -33,22 +33,47 @@
 # TODO: Poll command and wait until it is finished before proceeding
 - name: Wait for image to be created
   shell: composer-cli compose status
-  async: "1200"
-  poll: "05"
+  retries: 100
+  delay: 60
+  until: "'FINISHED' in rhbc_image_create.stdout_lines[0]"
   register: rhbc_image_create
 
-#- name: "Debug"
-#  debug:
-#    var: rhbc_image_create
+- name: Get image UUID
+  debug:
+    var: rhbc_image_create
 
-- name: Check on status of async task to build image
-  async_status:
-    jid: "{{ rhbc_image_create.ansible_job_id }}"
-  register: job_result
-  until: "'FINISHED' in rhbc_image_create.stdout"
-  retries: 100
-  delay: 10
+- name: Get image UUID
+  set_fact:
+    uuid: "{{ rhbc_image_create.stdout_lines[0].split(' ')[0] }}"
 
-# TODO: Get the image uuid
+# TODO: Don't assume to use /root/
+- name: Check for existance of cloud image
+  stat:
+    path: "/root/{{ uuid }}-disk.{{ image_format }}"
+  register: rhbc_image_stat
+
+# TODO: Don't assume to use /root/
+- name: Download the the VM image
+  shell:
+    cmd: composer-cli compose image {{ uuid }}
+    chdir: "/root/"
+  register: rhbc_image_get
+  when: "rhbc_image_stat.stat.exists == false"
+
+- name: Move the new image to the expected location
+  copy:
+    src: "/root/{{ uuid }}-disk.{{ image_format }}"
+    dest: "{{ rawimage_dest }}"
+    remote_src: yes
+
+- name: Remove downloaded image
+  file:
+    path: "{{ uuid }}-disk.{{ image_format }}"
+    state: absent
+
+- name: Remove tempdir
+  file:
+    path: "{{ rhbc_temp.path }}"
+    state: absent
 
 ...

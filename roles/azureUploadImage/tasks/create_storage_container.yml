@@ -2,7 +2,7 @@
 
 - name: Create a storage account
   azure_rm_storageaccount:
-    resource_group: "{{ site_resource_group }}"
-    name: "{{ site_storage_account }}"
+    resource_group: "{{ resource_group }}"
+    name: "{{ storage_account }}"
     account_type: Standard_LRS
 ...

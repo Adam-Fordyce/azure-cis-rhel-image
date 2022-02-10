@@ -231,6 +231,25 @@ It is possible to encrypt and decrypt the vault during setup as required as foll
     # Wait...
     ```
 
+### Bugs/Todos
+
+#### Roles required
+- Create role to create storage blob in Azure and upload VHD image into it
+- Create role to launch new VM in Azure using the new image
+- Create role to test the new image, ensuring it passes the CIS hardening checks
+
+#### General updates required
+- Automate the createion of the osbuild-composer JSON configuration file which has the GPG keys embedded inside it for the RHEL repositories
+- Configure the project to work from an azure devops pipeline task
+- Harden the code so that there is an option to run against another cloud provider
+
+## References
+
+ - [Building a customized Azure VM image with Image Builder and libvirt](https://www.redhat.com/en/blog/building-customized-azure-vm-image-image-builder-and-libvirt)
+ - [Red Hat Enterprise Linux 8 Image Builder: Building custom system images](https://developers.redhat.com/blog/2019/05/08/red-hat-enterprise-linux-8-image-builder-building-custom-system-images)
+ - [Automate your SAP HANA Scale-Up System Replication Deployment with High Availability](https://www.redhat.com/en/blog/automate-your-sap-hana-scale-system-replication-deployment-high-availability)
+ - [Build RHEL images for Azure with Image Builder](https://www.redhat.com/en/blog/build-rhel-images-azure-image-builder)
+
 ## Author
 
 Adam Fordyce

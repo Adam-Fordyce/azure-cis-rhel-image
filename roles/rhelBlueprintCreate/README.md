@@ -15,8 +15,9 @@ Role Variables
 
 | Variable                | Required | Default | Choices                   | Comments                                 |
 |-------------------------|----------|---------|---------------------------|------------------------------------------|
-| image_name              | yes      |  azure-rhel-cis-master-image  | none    |   Name of the image that is created                         |
-| image_format            | yes      | vhd        | any osbuild-composer supported format                 | Format of image (VHD for Azure)         |
+| image_name              | yes      |  azure-rhel-cis-master-image  | n/a    |   Name of the image that is created                         |
+| image_format            | yes      | vhd        | n/a                 | Format of image (VHD for Azure)         |
+| rawimage_dest           | yes      | /root/{{ image_name }}.{{ image_format }} | n/a |Location of resulting image |
 
 Dependencies
 ------------
@@ -32,6 +33,7 @@ Example Playbook
   vars:
     image_name: "{{ site_image_name }}"
     image_format: "{{ site_image_format }}"
+    rawimage_dest: "{{ host_rawimage_dest }}"
   roles:
     - rhelBlueprintCreate
 ```

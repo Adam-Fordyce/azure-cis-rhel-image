@@ -1,0 +1,9 @@
+---
+# Main task file for the azureUploadeImage role
+
+- include_tasks: "{{ item }}"
+  loop:
+    - tasks/create_storage_container.yml
+    - tasks/create_storage_blob.yml
+    - tasks/create_image_from_vhd.yml
+...
