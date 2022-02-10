@@ -27,14 +27,14 @@ Dependencies
 Example Playbook
 ----------------
 
-    ```
-    - hosts: provisioner
-      vars:
-        image_name: "{{ site_image_name }}"
-        image_format: "{{ site_image_format }}"
-      roles:
-         - rhelBlueprintCreate
-    ```
+```
+- hosts: provisioner
+  vars:
+    image_name: "{{ site_image_name }}"
+    image_format: "{{ site_image_format }}"
+  roles:
+    - rhelBlueprintCreate
+```
 
 License
 -------

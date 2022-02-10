@@ -1,5 +1,6 @@
 ---
 # Playbook to create CIS hardened RHEL image on Azure
+# If re-running to generate an image add --skip-tags install to ansible-playbook command
 - name: Create Azure Resources
   hosts: localhost
   connection: local
@@ -9,6 +10,8 @@
         content: "{{ vault_ssh_private_key_data }}"
         dest: "{{ playbook_dir }}/{{ vault_ssh_private_key_name }}"
         mode: "0600"
+      tags:
+        - install
 
     - name: "Create the Azure VPC"
       include_role:
@@ -21,6 +24,8 @@
         subnet_cidr: "{{ site_subnet_cidr }}"
         supernet_cidr: "{{ site_supernet_cidr }}"
         virtual_network: "{{ site_virtual_network }}"
+      tags:
+        - install
 
     - name: "Create Provisioner VM"
       include_role:
@@ -45,7 +50,6 @@
       loop_control:
         loop_var: vm
         label: "Creating cloud VM {{ hostvars[vm].inventory_hostname }}"
-      register: vm_output
 
     - name: Set Fact
       set_fact:
@@ -70,10 +74,14 @@
       vars:
         rhel_username: "{{ vault_rhel_subscription_username }}"
         rhel_password: "{{ vault_rhel_subscription_password }}"
+      tags:
+        - install
 
     - name: Prepare osbuild-composer to generate a SAP image
       include_role:
         name: rhelImageBuilderSetup
+      tags:
+        - install
 
     - name: Create the cloud image
       include_role:

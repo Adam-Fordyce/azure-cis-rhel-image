@@ -1,5 +1,6 @@
 ---
-
+# Inventory variables added to all hosts
+# All variables are prefixed with site_ to denote they belong to all hosts.
 site_resource_group: azure-rhel-cis
 site_storage_account: "{{ site_resource_group }}-storage-account"
 site_storage_container: "{{ site_resource_group }}-storage-container"

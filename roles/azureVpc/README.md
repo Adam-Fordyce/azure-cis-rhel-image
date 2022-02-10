@@ -28,19 +28,19 @@ none
 Example Playbook
 ----------------
 
-    ```
-    - name: "Create the Azure VPC"
-      include_role:
-        name: azureVpc
-      vars:
-        state: present
-        resource_group: "{{ site_resource_group }}"
-        azure_region: "{{ site_azure_region }}"
-        virtual_network_subnet: "{{ site_virtual_network_subnet }}"
-        subnet_cidr: "{{ site_subnet_cidr }}"
-        supernet_cidr: "{{ site_supernet_cidr }}"
-        virtual_network: "{{ site_virtual_network }}"
-    ```
+```
+- name: "Create the Azure VPC"
+  include_role:
+    name: azureVpc
+  vars:
+    state: present
+    resource_group: "{{ site_resource_group }}"
+    azure_region: "{{ site_azure_region }}"
+    virtual_network_subnet: "{{ site_virtual_network_subnet }}"
+    subnet_cidr: "{{ site_subnet_cidr }}"
+    supernet_cidr: "{{ site_supernet_cidr }}"
+    virtual_network: "{{ site_virtual_network }}"
+```
 
 License
 -------

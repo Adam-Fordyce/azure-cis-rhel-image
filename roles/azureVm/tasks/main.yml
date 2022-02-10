@@ -1,4 +1,5 @@
 ---
+# Main task file for the azureVm role
 
 - block:
     - name: Create public IP address
@@ -13,6 +14,8 @@
         resource_group: "{{ resource_group }}"
         name: "{{ security_group }}"
         rules: "{{ security_group_rules }}"
+      tags:
+        - install
 
     - name: Create virtual network interface
       azure_rm_networkinterface:
@@ -25,6 +28,8 @@
           - name: ipconfig1
             public_ip_address_name: "{{ public_ip }}"
             primary: True
+      tags:
+        - install
 
     - name: Create an availability set for managed disk vm
       azure_rm_availabilityset:
@@ -34,6 +39,8 @@
         platform_fault_domain_count: 2
         sku: Aligned
         location: "{{ azure_region }}"
+      tags:
+        - install
 
     - name: Create VM
       azure_rm_virtualmachine:
@@ -50,10 +57,13 @@
         availability_set: "{{ vmname }}-avs-managed-disk"
         managed_disk_type: StandardSSD_LRS
         image: "{{ azure_image }}"
+      tags:
+        - install
 
     - name: Public IP of VM
       debug:
         msg: "The public IP is {{ output_ip_address.state.ip_address }}."
+
   when: state == 'present'
 
 - block:
@@ -82,6 +92,7 @@
         resource_group: "{{ resource_group }}"
         name: "{{ public_ip }}"
         state: absent
+
   when: state == 'absent'
 
 ...
