@@ -37,9 +37,17 @@
   poll: "05"
   register: rhbc_image_create
 
-- name: "Debug"
-  debug:
-    var: rhbc_image_create.stdout_lines
+#- name: "Debug"
+#  debug:
+#    var: rhbc_image_create
+
+- name: Check on status of async task to build image
+  async_status:
+    jid: "{{ rhbc_image_create.ansible_job_id }}"
+  register: job_result
+  until: "'FINISHED' in rhbc_image_create.stdout"
+  retries: 100
+  delay: 10
 
 # TODO: Get the image uuid
 
