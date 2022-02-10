@@ -1,0 +1,41 @@
+---
+# Main task file for rhelImageCustomisation
+# Variables are prefixed with rhic_
+
+- name: "Install dependent packages"
+  yum:
+    name: "{{ pkg.name }}"
+    state: "{{ pkg.version }}"
+  loop: "{{ packages }}"
+  loop_control:
+    loop_var: pkg
+    label: "Installing {{ pkg.name }}"
+
+- name: Create tempdir
+  tempfile:
+    state: directory
+  register: rhic_tempdir
+
+- name: Copy the run_on_bootstrap.sh script to the tempdir
+  copy:
+    src: "run_on_bootstrap.sh"
+    dest: "{{ rhic_tempdir.path }}"
+    mode: "0777"
+
+- name: Unpack SSH Private key
+  copy:
+    content: "{{ ssh_public_key_data }}"
+    dest: "/home/{{ ansible_user }}/.ssh/{{ ssh_public_key_name }}"
+    mode: "0600"
+
+- name: Embed the first boot script into the VHD image
+  shell:
+    cmd: >
+      virt-customize -a {{ image_dest }}
+        --firstboot {{ rhic_tempdir.path }}/run_on_bootstrap.sh
+        --root-password "password:redhat"
+        --hostname bootstrap
+        --ssh-inject root:file:./.ssh/{{ ssh_public_key_name }}
+        --selinux-relabel
+
+...
