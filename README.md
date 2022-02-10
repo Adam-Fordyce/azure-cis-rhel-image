@@ -174,8 +174,8 @@ The following diagram reflects the various stages of deployment that are employe
         vault_ssh_public_key_name: <key_name>.pub  # e.g. id_rsa.pub
         vault_ssh_public_key_data: >-
             ssh-rsa ######################################################################################################################
-        vault_ssh_key_name: <key_name>  # e.g. id_rsa
-        vault_ssh_key_data: >-
+        vault_ssh_private_key_name: <key_name>  # e.g. id_rsa
+        vault_ssh_private_key_data: >-
             -----BEGIN OPENSSH PRIVATE KEY-----
             ######################################################################
             ######################################################################
@@ -185,6 +185,21 @@ The following diagram reflects the various stages of deployment that are employe
         ```
     1. Save and close the file
 
+### Notes on vault
+
+It is possible to encrypt and decrypt the vault during setup as required as follows:
+
+1. Decrypt the ansible vault file
+    ```
+    ansible-vault --vault-id ~/vault_secrets/pw decrypt inventory/group_vars/all/vault
+    ```
+
+1. Encrypt the ansible vault file
+    ```
+    ansible-vault --vault-id ~/vault_secrets/pw encrypt inventory/group_vars/all/vault
+    ```
+
+> Note: the vault file is in the git ignore file.
 ## Deployment
 
 1. The Ansible inventory has a single host defined for the purpose of creating cloud images.
