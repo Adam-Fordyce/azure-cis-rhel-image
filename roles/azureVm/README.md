@@ -16,13 +16,17 @@ A description of the settable variables for this role should go here, including 
 
 | Variable                | Required | Default | Choices                   | Comments                                 |
 |-------------------------|----------|---------|---------------------------|------------------------------------------|
-| state                   | yes      |         | present, absent           | Invocation action                        |
+| state                   | yes      |         | n/a                       | Invocation action                        |
+| azure_subscription_id   | yes      |         | n/a                       | Azure subscription ID                    |
+| azure_client_id         | yes      |         | n/a                       | Service Principal Client ID              |
+| azure_secret            | yes      |         | n/a                       | Service Principal Secret                 |
+| azure_tenant            | yes      |         | n/a                       | Azure tenant ID                          |
 | resource_group          | yes      |         | n/a                       | Name of Azure resource group             |
 | public_ip               | yes      |         | n/a                       | Name of Azure public IP resource         |
 | security_group          | yes      |         | n/a                       | Name of Azure security group             |
 | security_group_rules    | yes      | 22, 9090| n/a                       | Azure security group rules (list)        |
 | nic                     | yes      |         | n/a                       | Name of Azure network interface          |
-| flavor                  | yes      | Standard_D2as_v4  | n/a                       | Type of Azure instance to start the image on |
+| flavor                  | yes      | Standard_D2as_v4  | n/a             | Type of Azure instance to start the image on |
 | vmname                  | yes      |         | n/a                       | Name of Azure VM                         |
 | azure_image             | yes      |         | n/a                       | Name of Azure image e.g. golden-image    |
 | virtual_network         | yes      |         | n/a                       | Name of Azure virtual network            |
@@ -47,6 +51,10 @@ Example Playbook
     name: azureVm
   vars:
     state: present
+    azure_subscription_id: "{{ vault_azure_subscription_id }}"
+    azure_client_id: "{{ vault_azure_client_id }}"
+    azure_secret: "{{ vault_azure_secret }}"
+    azure_tenant: "{{ vault_azure_tenant }}"
     resource_group: "{{ site_resource_group }}"
     public_ip: "{{ hostvars[vm].public_ip }}"
     security_group: "{{ hostvars[vm].security_group }}"

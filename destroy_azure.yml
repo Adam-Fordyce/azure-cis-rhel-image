@@ -9,6 +9,10 @@
         name: azureVm
       vars:
         state: absent
+        azure_subscription_id: "{{ vault_azure_subscription_id }}"
+        azure_client_id: "{{ vault_azure_client_id }}"
+        azure_secret: "{{ vault_azure_secret }}"
+        azure_tenant: "{{ vault_azure_tenant }}"
         resource_group: "{{ site_resource_group }}"
         public_ip: "{{ hostvars[vm].public_ip }}"
         security_group: "{{ hostvars[vm].security_group }}"
@@ -34,6 +38,10 @@
         name: azureVpc
       vars:
         state: absent
+        azure_subscription_id: "{{ vault_azure_subscription_id }}"
+        azure_client_id: "{{ vault_azure_client_id }}"
+        azure_secret: "{{ vault_azure_secret }}"
+        azure_tenant: "{{ vault_azure_tenant }}"
         resource_group: "{{ site_resource_group }}"
         azure_region: "{{ site_azure_region }}"
         virtual_network_subnet: "{{ site_virtual_network_subnet }}"

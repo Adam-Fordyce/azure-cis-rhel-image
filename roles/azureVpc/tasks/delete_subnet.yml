@@ -1,6 +1,10 @@
 ---
 - name: Delete subnet
   azure_rm_subnet:
+    subscription_id: "{{ azure_subscription_id }}"
+    client_id: "{{ azure_client_id }}"
+    secret: "{{ azure_secret }}"
+    tenant: "{{ azure_tenant }}"
     resource_group: "{{ resource_group }}"
     virtual_network_name: "{{ virtual_network }}"
     name: "{{ virtual_network_subnet }}"

@@ -14,6 +14,10 @@ Role Variables
 | Variable                | Required | Default | Choices                   | Comments                                 |
 |-------------------------|----------|---------|---------------------------|------------------------------------------|
 | state                   | yes      | n/a     | present, absent           | An action variable to dictate the state of the Azure VPC                |
+| azure_subscription_id   | yes      |         | n/a                       | Azure subscription ID                    |
+| azure_client_id         | yes      |         | n/a                       | Service Principal Client ID              |
+| azure_secret            | yes      |         | n/a                       | Service Principal Secret                 |
+| azure_tenant            | yes      |         | n/a                       | Azure tenant ID                          |
 | resource_group          | yes      |         |                           | Name of Azure resource group             |
 | azure_region            | yes      |         |                           | Region where Azure resources are located |
 | virtual_network_subnet  | yes      |         |                           | Name of virtual network subnet           |
@@ -34,6 +38,10 @@ Example Playbook
     name: azureVpc
   vars:
     state: present
+    azure_subscription_id: "{{ vault_azure_subscription_id }}"
+    azure_client_id: "{{ vault_azure_client_id }}"
+    azure_secret: "{{ vault_azure_secret }}"
+    azure_tenant: "{{ vault_azure_tenant }}"
     resource_group: "{{ site_resource_group }}"
     azure_region: "{{ site_azure_region }}"
     virtual_network_subnet: "{{ site_virtual_network_subnet }}"
@@ -50,4 +58,4 @@ MIT See LICENSE
 Author Information
 ------------------
 
-Adam Fordyce
+Adam Fordyce - 2022

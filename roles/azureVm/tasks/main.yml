@@ -4,6 +4,10 @@
 - block:
     - name: Create public IP address
       azure_rm_publicipaddress:
+        subscription_id: "{{ azure_subscription_id }}"
+        client_id: "{{ azure_client_id }}"
+        secret: "{{ azure_secret }}"
+        tenant: "{{ azure_tenant }}"
         resource_group: "{{ resource_group }}"
         allocation_method: Static
         name: "{{ public_ip }}"
@@ -11,12 +15,20 @@
 
     - name: Create Network Security Group that allows SSH
       azure_rm_securitygroup:
+        subscription_id: "{{ azure_subscription_id }}"
+        client_id: "{{ azure_client_id }}"
+        secret: "{{ azure_secret }}"
+        tenant: "{{ azure_tenant }}"
         resource_group: "{{ resource_group }}"
         name: "{{ security_group }}"
         rules: "{{ security_group_rules }}"
 
     - name: Create virtual network interface
       azure_rm_networkinterface:
+        subscription_id: "{{ azure_subscription_id }}"
+        client_id: "{{ azure_client_id }}"
+        secret: "{{ azure_secret }}"
+        tenant: "{{ azure_tenant }}"
         resource_group: "{{ resource_group }}"
         name: "{{ nic }}"
         virtual_network: "{{ virtual_network }}"
@@ -29,6 +41,10 @@
 
     - name: Create an availability set for managed disk vm
       azure_rm_availabilityset:
+        subscription_id: "{{ azure_subscription_id }}"
+        client_id: "{{ azure_client_id }}"
+        secret: "{{ azure_secret }}"
+        tenant: "{{ azure_tenant }}"
         name: "{{ vmname }}-avs-managed-disk"
         resource_group: "{{ resource_group }}"
         platform_update_domain_count: 5
@@ -38,6 +54,10 @@
 
     - name: Create VM
       azure_rm_virtualmachine:
+        subscription_id: "{{ azure_subscription_id }}"
+        client_id: "{{ azure_client_id }}"
+        secret: "{{ azure_secret }}"
+        tenant: "{{ azure_tenant }}"
         resource_group: "{{ resource_group }}"
         name: "{{ vmname }}"
         vm_size: "{{ flavor }}"
@@ -68,6 +88,10 @@
 
     - name: Delete VM
       azure_rm_virtualmachine:
+        subscription_id: "{{ azure_subscription_id }}"
+        client_id: "{{ azure_client_id }}"
+        secret: "{{ azure_secret }}"
+        tenant: "{{ azure_tenant }}"
         resource_group: "{{ resource_group }}"
         name: "{{ vmname }}"
         remove_on_absent: all
@@ -75,24 +99,40 @@
 
     - name: Delete an availability set for managed disk vm
       azure_rm_availabilityset:
+        subscription_id: "{{ azure_subscription_id }}"
+        client_id: "{{ azure_client_id }}"
+        secret: "{{ azure_secret }}"
+        tenant: "{{ azure_tenant }}"
         name: "{{ vmname }}-avs-managed-disk"
         resource_group: "{{ resource_group }}"
         state: absent
 
     - name: Delete virtual network interface
       azure_rm_networkinterface:
+        subscription_id: "{{ azure_subscription_id }}"
+        client_id: "{{ azure_client_id }}"
+        secret: "{{ azure_secret }}"
+        tenant: "{{ azure_tenant }}"
         resource_group: "{{ resource_group }}"
         name: "{{ nic }}"
         state: absent
 
     - name: Delete Network Security Group that allows SSH
       azure_rm_securitygroup:
+        subscription_id: "{{ azure_subscription_id }}"
+        client_id: "{{ azure_client_id }}"
+        secret: "{{ azure_secret }}"
+        tenant: "{{ azure_tenant }}"
         resource_group: "{{ resource_group }}"
         name: "{{ security_group }}"
         state: absent
 
     - name: Delete public IP address
       azure_rm_publicipaddress:
+        subscription_id: "{{ azure_subscription_id }}"
+        client_id: "{{ azure_client_id }}"
+        secret: "{{ azure_secret }}"
+        tenant: "{{ azure_tenant }}"
         resource_group: "{{ resource_group }}"
         name: "{{ public_ip }}"
         state: absent

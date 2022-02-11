@@ -1,6 +1,10 @@
 ---
 - name: Delete virtual network
   azure_rm_virtualnetwork:
+    subscription_id: "{{ azure_subscription_id }}"
+    client_id: "{{ azure_client_id }}"
+    secret: "{{ azure_secret }}"
+    tenant: "{{ azure_tenant }}"
     resource_group: "{{ resource_group }}"
     name: "{{ virtual_network }}"
     state: absent

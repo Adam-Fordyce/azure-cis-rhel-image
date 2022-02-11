@@ -14,12 +14,17 @@ Role Variables
 
 | Variable                | Required | Default | Choices                   | Comments                                 |
 |-------------------------|----------|---------|---------------------------|------------------------------------------|
+| azure_subscription_id   | yes      |         | n/a                       | Azure subscription ID                    |
+| azure_client_id         | yes      |         | n/a                       | Service Principal Client ID              |
+| azure_secret            | yes      |         | n/a                       | Service Principal Secret                 |
+| azure_tenant            | yes      |         | n/a                       | Azure tenant ID                          |
 | resource_group          | yes      |         | n/a                       | Name of Azure resource group             |
-| security_group          | yes      |         | n/a                       | Name of Azure security group             |
-| security_group_rules    | yes      | 22, 9090| n/a                       | Azure security group rules (list)        |
-| virtual_network         | yes      |         | n/a                       | Name of Azure virtual network            |
-| virtual_network_subnet  | yes      |         | n/a                       | Name of Azure virtual networks subnet    |
-| azure_region            | yes      |         | n/a                       | Region in Azure where resources are      |
+| storage_account         | yes      |         | n/a                       | Name of Azure storage account            |
+| storage_container       | yes      |         | n/a                       | Name of Azure storage container            |
+| image_name              | yes      |         | n/a                       | Name of custom Azure image            |
+| image_URI              | yes      |         | n/a                       | URI on Azure of Image            |
+| image_format              | yes      |  vhd    | n/a                       | Format of image file          |
+| image_src              | yes      |         | n/a                       | Local path to custom image file       |
 
 Dependencies
 ------------
@@ -38,6 +43,18 @@ Example Playbook
 - name: "Upload Image to Azure"
   include_role:
     name: azureUploadImage
+  vars:
+    azure_subscription_id: "{{ vault_azure_subscription_id }}"
+    azure_client_id: "{{ vault_azure_client_id }}"
+    azure_secret: "{{ vault_azure_secret }}"
+    azure_tenant: "{{ vault_azure_tenant }}"
+    resource_group: "{{ site_resource_group }}"
+    storage_account: "{{ site_storage_account }}"
+    storage_container: "{{ site_storage_container }}"
+    image_name: "{{ site_image_name }}"
+    image_URI: "{{ host_image_URI }}"
+    image_format: "{{ site_image_format }}"
+    image_src: "{{ host_rawimage_dest }}"
 
 ```
 

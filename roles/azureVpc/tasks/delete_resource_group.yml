@@ -2,6 +2,10 @@
 
 - name: Delete resource group
   azure_rm_resourcegroup:
+    subscription_id: "{{ azure_subscription_id }}"
+    client_id: "{{ azure_client_id }}"
+    secret: "{{ azure_secret }}"
+    tenant: "{{ azure_tenant }}"
     name: "{{ resource_group }}"
     location: "{{ azure_region }}"
     state: absent
