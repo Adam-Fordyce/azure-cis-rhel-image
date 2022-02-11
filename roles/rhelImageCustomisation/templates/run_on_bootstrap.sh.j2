@@ -51,7 +51,7 @@ subnet_cidr: {{ site_subnet_cidr }}
 admin_user: {{ vault_admin_user }}
 admin_pass: {{ vault_admin_pass }}
 ssh_pubkey_data: {{ vault_ssh_public_key_data }}
-custom_image: {{ azure_image }}
+custom_image: {{ hostvars[ groups['azureimage'][0].inventory_hostname ].azure_image }}
 flavor: Standard_E8s_v3
 ...
 EOF
