@@ -208,8 +208,10 @@ It is possible to encrypt and decrypt the vault during setup as required as foll
         ansible-inventory --vault-id ~/vault_secrets/pw -i inventory --graph
 
         @all:
-        |--@cloud:
+        |--@azure:
         |  |--provisioner
+        |--@azureimage:
+        |  |--bootstrap01
         |--@ungrouped:
         ```
 
@@ -248,7 +250,7 @@ It is possible to encrypt and decrypt the vault during setup as required as foll
  - [Building a customized Azure VM image with Image Builder and libvirt](https://www.redhat.com/en/blog/building-customized-azure-vm-image-image-builder-and-libvirt)
  - [Red Hat Enterprise Linux 8 Image Builder: Building custom system images](https://developers.redhat.com/blog/2019/05/08/red-hat-enterprise-linux-8-image-builder-building-custom-system-images)
  - [Automate your SAP HANA Scale-Up System Replication Deployment with High Availability](https://www.redhat.com/en/blog/automate-your-sap-hana-scale-system-replication-deployment-high-availability)
- - [Build RHEL images for Azure with Image Builder](https://www.redhat.com/en/blog/build-rhel-images-azure-image-builder)
+ - [Build RHEL images for Azure with Image Builder](https://www.redhat.com/en/blog/build-rhel-images-azureimage-builder)
 
 ## Author
 

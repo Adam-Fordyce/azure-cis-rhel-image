@@ -1,7 +1,10 @@
 ---
 all:
   children:
-    cloud:
+    azure:
       hosts:
         provisioner:
+    azureimage:
+      hosts:
+        bootstrap01:
 ...

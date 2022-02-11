@@ -1,0 +1,23 @@
+---
+virtual_machine: "{{ inventory_hostname }}"
+public_ip: "{{ virtual_machine }}PublicIP"
+nic: "{{ virtual_machine }}VMNic"
+security_group: "{{ site_resource_group }}{{ virtual_machine }}secgroup1"
+security_group_rules:
+  - name: SSH
+    protocol: Tcp
+    destination_port_range: 22
+    access: Allow
+    priority: 1001
+    direction: Inbound
+flavor: Standard_D2as_v4
+azure_image:
+  name: "{{ site_image_name }}"
+  resource_group: "{{ site_resource_group }}"
+
+os_disk_size: 200
+
+#host_rawimage_dest: "/root/{{ site_image_name }}.{{ site_image_format }}"
+#host_image_dest: "/root/{{ site_image_name }}-final.{{ site_image_format }}"
+#host_image_URI: "https://{{ site_storage_account }}.blob.core.windows.net/{{ site_storage_container }}/{{ site_image_name }}.{{ site_image_format }}"
+...
