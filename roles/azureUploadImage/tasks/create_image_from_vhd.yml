@@ -1,8 +1,16 @@
 ---
 - name: Create an image from os disk
   azure_rm_image:
+    subscription_id: "{{ azure_subscription_id }}"
+    client_id: "{{ azure_client_id }}"
+    secret: "{{ azure_secret }}"
+    tenant: "{{ azure_tenant }}"
     resource_group: "{{ resource_group }}"
     name: "{{ image_name }}"
     source: "{{ image_URI }}"
     os_type: Linux
+  register: new_image
+
+- debug:
+    var: new_image
 ...

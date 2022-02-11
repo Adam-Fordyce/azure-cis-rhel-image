@@ -1,6 +1,10 @@
 ---
 - name: Upload a blob image
   azure_rm_storageblob:
+    subscription_id: "{{ azure_subscription_id }}"
+    client_id: "{{ azure_client_id }}"
+    secret: "{{ azure_secret }}"
+    tenant: "{{ azure_tenant }}"
     resource_group: "{{ resource_group }}"
     storage_account_name: "{{ storage_account }}"
     container: "{{ storage_container }}"

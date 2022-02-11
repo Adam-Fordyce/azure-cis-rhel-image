@@ -2,6 +2,10 @@
 
 - name: Create a storage account
   azure_rm_storageaccount:
+    subscription_id: "{{ azure_subscription_id }}"
+    client_id: "{{ azure_client_id }}"
+    secret: "{{ azure_secret }}"
+    tenant: "{{ azure_tenant }}"
     resource_group: "{{ resource_group }}"
     name: "{{ storage_account }}"
     account_type: Standard_LRS

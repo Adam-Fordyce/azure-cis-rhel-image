@@ -1,6 +1,34 @@
 ---
 # Main task file for the azureUploadeImage role
 
+- name: Install yum dependencies
+  yum:
+    name: "{{ item.name }}"
+    state: "{{ item.version }}"
+  loop:
+    - name: python3-pip
+      version: latest
+    - name: gcc
+      version: latest
+    - name: make
+      version: latest
+    - name: python3-devel
+      version: latest
+  tags:
+    - install
+
+- name: Install pip dependencies
+  pip:
+    name: "{{ item.name }}"
+    state: "{{ item.state }}"
+  loop:
+    - name: ansible==2.9.7
+      state: present
+    - name: ansible[azure]
+      state: present
+  tags:
+    - install
+
 - include_tasks: "{{ item }}"
   loop:
     - tasks/create_storage_container.yml
