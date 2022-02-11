@@ -24,7 +24,7 @@ virtual_machine: {{ inventory_hostname }}
 public_ip: {{ public_ip }}
 nic: {{ nic }}
 security_group: {{ security_group }}
-image_URI: "https://{{ storage_account }}.blob.core.windows.net/{{ storage_container }}/{{ image_name }}"
+image_URI: "https://{{ site_storage_account }}.blob.core.windows.net/{{ site_storage_container }}/{{ site_image_name }}.{{ site_image_format }}"
 avaiability_set: {{ site_availability_set }}
 supernet_cidr: {{ site_supernet_cidr }}
 subnet_cidr: {{ site_subnet_cidr }}
