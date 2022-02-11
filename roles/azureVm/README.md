@@ -62,7 +62,7 @@ Example Playbook
     admin_pass: "{{ vault_admin_pass }}"
     ssh_key_public_data: "{{ vault_ssh_key_public_data }}"
     os_disk_size: "{{ hostvars[vm].os_disk_size }}"
-  loop: "{{ groups['cloud'] }}"
+  loop: "{{ groups['azure'] }}"
   loop_control:
     loop_var: vm
     label: "Creating cloud VM {{ hostvars[vm].inventory_hostname }}"

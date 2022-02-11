@@ -7,17 +7,27 @@
     state: directory
     suffix: blueprint
   register: rhbc_temp
+  tags:
+    - compose
 
 - name: Create blueprint.toml
   template:
     src: blueprint.toml.j2
     dest: "{{ rhbc_temp.path }}/{{ image_name }}.toml"
+  tags:
+    - compose
+
 
 - name: "Push blueprint {{ image_name }} to the ImageBuilder"
   shell: composer-cli blueprints push "{{ rhbc_temp.path }}/{{ image_name }}.toml"
+  tags:
+    - compose
+
 
 - name: "Solve package dependencies for {{ image_name }}"
   shell: composer-cli blueprints depsolve "{{ image_name }}"
+  tags:
+    - compose
 
 # TODO: add azure.toml at end of the shell command, this will allow the image to be uploaded to Azure
 #
@@ -29,6 +39,8 @@
 #
 - name: Create the the VM image
   shell: "composer-cli compose start {{ image_name }} {{ image_format }}"
+  tags:
+    - compose
 
 # TODO: Poll command and wait until it is finished before proceeding
 - name: Wait for image to be created
@@ -37,10 +49,6 @@
   delay: 60
   until: "'FINISHED' in rhbc_image_create.stdout_lines[0]"
   register: rhbc_image_create
-
-- name: Get image UUID
-  debug:
-    var: rhbc_image_create
 
 - name: Get image UUID
   set_fact:
@@ -65,6 +73,8 @@
     src: "/root/{{ uuid }}-disk.{{ image_format }}"
     dest: "{{ rawimage_dest }}"
     remote_src: yes
+  tags:
+    - compose
 
 - name: Remove downloaded image
   file:
@@ -75,5 +85,7 @@
   file:
     path: "{{ rhbc_temp.path }}"
     state: absent
+  tags:
+    - compose
 
 ...

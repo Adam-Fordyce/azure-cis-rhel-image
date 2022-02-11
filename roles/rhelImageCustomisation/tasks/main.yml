@@ -13,9 +13,9 @@
   tags:
     - install
 
-- name: Enable the cockpit socket
+- name: Enable the libvirtd service
   service:
-    name: libvird.service
+    name: libvirtd.service
     state: started
     enabled: yes
 
@@ -51,10 +51,12 @@
       --hostname bootstrap
       --ssh-inject root:file:/root/.ssh/{{ ssh_public_key_name }}
       --selinux-relabel
+  tags:
+    - customise
 
 - name: Remove tempdir
   file:
-    path: "{{ rhic_temp.path }}"
+    path: "{{ rhic_tempdir.path }}"
     state: absent
 
 ...

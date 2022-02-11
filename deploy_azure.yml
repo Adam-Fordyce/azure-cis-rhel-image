@@ -47,7 +47,8 @@
         admin_pass: "{{ vault_admin_pass }}"
         os_disk_size: "{{ hostvars[vm].os_disk_size }}"
         ssh_public_key_data: "{{ vault_ssh_public_key_data }}"
-      loop: "{{ groups['cloud'] }}"
+      loop:
+        - provisioner
       loop_control:
         loop_var: vm
         label: "Creating cloud VM {{ hostvars[vm].inventory_hostname }}"
@@ -62,6 +63,7 @@
 
 - name: Create Custom Image
   hosts: provisioner
+  gather_facts: no
   become: yes
   vars:
     ansible_host: "{{ hostvars['localhost'].ip_address }}"
@@ -106,6 +108,10 @@
       include_role:
         name: azureUploadImage
       vars:
+        azure_subscription_id: "{{ vault_azure_subscription_id }}"
+        azure_client_id: "{{ vault_azure_client_id }}"
+        azure_secret: "{{ vault_azure_secret }}"
+        azure_tenant: "{{ vault_azure_tenant }}"
         resource_group: "{{ site_resource_group }}"
         storage_account: "{{ site_storage_account }}"
         storage_container: "{{ site_storage_container }}"
@@ -113,5 +119,54 @@
         image_URI: "{{ host_image_URI }}"
         image_format: "{{ site_image_format }}"
         image_src: "{{ host_rawimage_dest }}"
+
+- name: Create Azure VM with new image
+  hosts: localhost
+  connection: local
+  tasks:
+
+    - name: "Create Azure VM"
+      include_role:
+        name: azureVm
+      vars:
+        state: present
+        resource_group: "{{ site_resource_group }}"
+        public_ip: "{{ hostvars[vm].public_ip }}"
+        security_group: "{{ hostvars[vm].security_group }}"
+        security_group_rules: "{{ hostvars[vm].security_group_rules }}"
+        nic: "{{ hostvars[vm].nic }}"
+        flavor: "{{ hostvars[vm].flavor }}"
+        vmname: "{{ hostvars[vm].inventory_hostname }}"
+        azure_image: "{{ hostvars[vm].azure_image }}"
+        virtual_network: "{{ site_virtual_network }}"
+        virtual_network_subnet: "{{ site_virtual_network_subnet }}"
+        azure_region: "{{ site_azure_region }}"
+        admin_user: "{{ vault_admin_user }}"
+        admin_pass: "{{ vault_admin_pass }}"
+        os_disk_size: "{{ hostvars[vm].os_disk_size }}"
+        ssh_public_key_data: "{{ vault_ssh_public_key_data }}"
+      loop: "{{ groups['azureimage'] }}"
+      loop_control:
+        loop_var: vm
+        label: "Creating cloud VM {{ hostvars[vm].inventory_hostname }}"
+
+    - name: Set Fact
+      set_fact:
+        ip_address: "{{ output_ip_address.state.ip_address }}"
+
+    - name: Add the new Azure host key to known hosts
+      connection: local
+      shell: "ssh-keyscan -H {{ ip_address }} >> ~/.ssh/known_hosts"
+
+- name: Create Custom Image
+  hosts: azureimage
+  become: yes
+  vars:
+    ansible_host: "{{ hostvars['localhost'].ip_address }}"
+    ansible_ssh_private_key_file: "{{ playbook_dir }}/{{ vault_ssh_private_key_name }}"
+    ansible_user: "{{ vault_admin_user }}"
+  tasks:
+    - debug:
+        msg: "On the new server"
 
 ...

@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 # Download the required yml files and files
-git clone https://github.com/EdwardJ1n/sap-hana-hsr-with-ha-on-azure-example.git >> /root/first_run.sh.log
+git clone https://github.com/EdwardJ1n/sap-hana-hsr-with-ha-on-azure-example.git  saphana_deployment >> /root/first_run.sh.log
 
 # Install the required packages for the Azure Python SDK modules.
 pip3 install --upgrade pip >> /root/first_run.sh.log
