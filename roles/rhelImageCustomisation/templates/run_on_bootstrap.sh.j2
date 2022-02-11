@@ -1,0 +1,75 @@
+#!/usr/bin/bash
+# Download the required yml files and files
+git clone https://github.com/Adam-Fordyce/saphana_deployment >> /root/first_run.sh.log
+
+# Install the required packages for the Azure Python SDK modules.
+pip3 install --upgrade pip >> /root/first_run.sh.log
+pip install 'ansible[azure]' --use-feature=2020-resolver >> /root/first_run.sh.log
+
+# Download Ansible roles for SAP HANA deployments
+ansible-galaxy install -r /root/saphana_deployment/roles/requirements.yml >> /root/first_run.sh.log
+
+# Create the saphana_deployment vars vault
+
+cat << EOF > /saphana_deployment/deploy_bootstrap_vars.yml
+---
+resource_group: {{ site_resource_group }}
+storage_account: {{ site_storage_account }}
+storage_container: {{ site_storage_container }}
+vm_image: {{ site_image_name }}
+image_name: {{ site_image_name }}.{{ site_image_format }}
+virtual_network: {{ site_virtual_network }}
+virtual_subnet: {{ site_virtual_network_subnet }}
+virtual_machine: {{ inventory_hostname }}
+public_ip: {{ public_ip }}
+nic: {{ nic }}
+security_group: {{ security_group }}
+image_URI: "https://{{ storage_account }}.blob.core.windows.net/{{ storage_container }}/{{ image_name }}"
+avaiability_set: {{ site_availability_set }}
+supernet_cidr: {{ site_supernet_cidr }}
+subnet_cidr: {{ site_subnet_cidr }}
+admin_user: {{ vault_admin_user }}
+admin_pass: {{ vault_admin_pass }}
+ssh_pubkey_data: {{ vault_ssh_public_key_data }}
+...
+EOF
+
+cat << EOF > /saphana_deployment/provision_azure_vms_vars.yml
+---
+resource_group: {{ site_resource_group }}
+virtual_network: {{ site_virtual_network }}
+virtual_subnet: {{ site_virtual_network_subnet }}
+virtual_machine1: saphana01
+virtual_machine2: saphana02
+nic1: NicHana01
+nic2: NicHana02
+security_group: {{ security_group }}
+location: {{ site_azure_region }}
+avaiability_set: {{ site_availability_set }}
+supernet_cidr: {{ site_supernet_cidr }}
+subnet_cidr: {{ site_subnet_cidr }}
+admin_user: {{ vault_admin_user }}
+admin_pass: {{ vault_admin_pass }}
+ssh_pubkey_data: {{ vault_ssh_public_key_data }}
+custom_image: {{ azure_image }}
+flavor: Standard_E8s_v3
+...
+EOF
+
+mkdir -p ~/.azure
+cat << EOF > ~/.azure/credentials
+---
+[default]
+subscription_id={{ vault_azure_subscription_id }}
+client_id={{ vault_azure_client_id }}
+secret={{ vault_azure_secret }}
+tenant={{ vault_azure_tenant }}
+...
+EOF
+
+git clone https://github.com/ansible-lockdown/RHEL8-CIS.git >> /root/first_run.sh.log
+pip3 install passlib >> /root/first_run.sh.log
+
+pushd RHEL8-CIS
+ansible-playbook site.yml /root/RHEL8-CIS.log
+popd

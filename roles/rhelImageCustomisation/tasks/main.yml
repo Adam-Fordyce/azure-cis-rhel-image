@@ -24,10 +24,11 @@
     state: directory
   register: rhic_tempdir
 
+# TODO: Add parameters for this task to role invocation and readme
 - name: Copy the run_on_bootstrap.sh script to the tempdir
-  copy:
-    src: "run_on_bootstrap.sh"
-    dest: "{{ rhic_tempdir.path }}"
+  template:
+    src: "run_on_bootstrap.sh.j2"
+    dest: "{{ rhic_tempdir.path }}/run_on_bootstrap.sh"
     mode: "0777"
 
 # TODO: Don't assume to use /root/

@@ -133,11 +133,15 @@
   connection: local
   tasks:
 
-    - name: "Create Azure VM"
+    - name: "Create Azure SAP Provisioning VM"
       include_role:
         name: azureVm
       vars:
         state: present
+        azure_subscription_id: "{{ vault_azure_subscription_id }}"
+        azure_client_id: "{{ vault_azure_client_id }}"
+        azure_secret: "{{ vault_azure_secret }}"
+        azure_tenant: "{{ vault_azure_tenant }}"
         resource_group: "{{ site_resource_group }}"
         public_ip: "{{ hostvars[vm].public_ip }}"
         security_group: "{{ hostvars[vm].security_group }}"
@@ -174,7 +178,14 @@
     ansible_ssh_private_key_file: "{{ playbook_dir }}/{{ vault_ssh_private_key_name }}"
     ansible_user: "{{ vault_admin_user }}"
   tasks:
-    - debug:
-        msg: "On the new server"
+    - name: "Provision SAP HANA System Replication with HA on Azure"
+      shell:
+        cmd: "ansible-playbook site.yml"
+        chdir: /saphana_deploument
+
+# TODO: Apply hardening: https://github.com/rediculum/RHEL8_Lockdown
+# TODO: Apply hardening via ansible: https://github.com/ansible-lockdown/RHEL8-CIS
+# TODO: Connect to the remote server and execute site.yml
+# TODO: Add Teardown for SAP HANA System
 
 ...
